@@ -9,7 +9,7 @@
   --radius-xl: 34px;
   --radius-lg: 24px;
   --radius-pill: 999px;
-  --red: #e84a63;
+  --red: #FF4040;
   --yellow: #f4c542;
   --green: #52ff8e;
   --blue: #5aa2ff;
@@ -267,7 +267,8 @@ canvas { display: block; }
 .project-card {
   position: relative;
   overflow: hidden;
-  padding: 1.15rem 1.2rem;
+  min-height: 100%;
+  padding: 1.15rem 1.2rem 1.05rem;
   text-align: left;
   color: var(--text);
   cursor: pointer;
@@ -279,7 +280,36 @@ canvas { display: block; }
   background: rgba(14, 18, 25, 0.8);
 }
 .project-card h3 { margin: 0 0 0.65rem; font-size: 1.9rem; }
-.project-card p { margin: 0 0 1rem; font-size: 0.96rem; }
+.project-card p { margin: 0; font-size: 0.96rem; line-height: 1.55; max-width: 58ch; }
+
+.project-logo-title-wrap {
+  margin: 0 0 0.8rem;
+}
+.project-logo-title {
+  display: block;
+  width: min(100%, 260px);
+  height: auto;
+}
+.project-logo-title-axis {
+  filter: drop-shadow(0 8px 18px rgba(0,0,0,0.28));
+}
+.project-logo-title-shroomfall {
+  width: min(100%, 360px);
+  margin-top: -0.05rem;
+  margin-bottom: -0.15rem;
+  filter: drop-shadow(0 10px 22px rgba(0,0,0,0.26));
+}
+.project-view-title-logo {
+  display: block;
+  width: min(100%, 420px);
+  height: auto;
+  margin: 0 auto;
+  filter: drop-shadow(0 12px 24px rgba(0,0,0,0.3));
+}
+.project-view-title-logo-shroomfall {
+  width: min(100%, 560px);
+}
+
 .project-accent {
   position: absolute;
   inset: 0 auto 0 0;
@@ -290,11 +320,25 @@ canvas { display: block; }
 .title-accent-green { color: var(--green); }
 .title-accent-yellow { color: var(--yellow); }
 .title-accent-blue { color: var(--blue); }
-.shroomfall .project-accent { background: linear-gradient(180deg, rgba(232,74,99,0.9), rgba(232,74,99,0.15)); }
-.axis .project-accent { background: linear-gradient(180deg, rgba(82,255,142,0.92), rgba(82,255,142,0.15)); }
+.highlight-recruiter-blue {
+  color: var(--blue);
+  font-weight: 700;
+}
+
+.highlight-recruiter-red {
+  color: var(--red);
+  font-weight: 700;
+}
+
+.shroomfall .project-accent { background: linear-gradient(180deg, rgba(255,64,64,0.9), rgba(255,64,64,0.15)); }
+.axis .project-accent { background: linear-gradient(180deg, rgba(90,162,255,0.95), rgba(90,162,255,0.15)); }
 .tools .project-accent { background: linear-gradient(180deg, rgba(244,197,66,0.95), rgba(244,197,66,0.15)); }
-.aiml .project-accent { background: linear-gradient(180deg, rgba(90,162,255,0.95), rgba(90,162,255,0.15)); }
+.aiml .project-accent { background: linear-gradient(180deg, rgba(82,255,142,0.92), rgba(82,255,142,0.15)); }
 .project-cta { font-weight: 700; font-size: 0.9rem; }
+
+.project-card.axis p {
+  max-width: 52ch;
+}
 
 .project-view {
   position: fixed;
@@ -382,11 +426,11 @@ canvas { display: block; }
 body.project-shroomfall #projectViewTitle,
 body.project-shroomfall .project-view-label { color: var(--red); }
 body.project-axis #projectViewTitle,
-body.project-axis .project-view-label { color: var(--green); }
+body.project-axis .project-view-label { color: var(--blue); }
 body.project-tools #projectViewTitle,
 body.project-tools .project-view-label { color: var(--yellow); }
 body.project-aiml #projectViewTitle,
-body.project-aiml .project-view-label { color: var(--blue); }
+body.project-aiml .project-view-label { color: var(--green); }
 #simConfig { display: none; }
 
 @media (max-width: 980px) {

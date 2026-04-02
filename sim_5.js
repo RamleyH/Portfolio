@@ -98,7 +98,7 @@ class Simulator {
     this.material = new Material("base", 4, 0.5, 0.5, 40);
 
     this.materials = [
-      new Material("red", 4, 0.5, 0.5, 40, "#e52838", 1.0),
+      new Material("red", 4, 0.5, 0.5, 40, "#FF4040", 1.0),
       new Material("orange", 4, 0.5, 0.5, 40, "#ffaa00", 0.6),
       new Material("green", 4, 0.5, 0.5, 40, "#00e230", 0.36),
       new Material("blue", 4, 0.5, 0.5, 40, "#0077f2", 0.216),

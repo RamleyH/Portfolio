@@ -6,100 +6,113 @@ const portfolioProjects = {
   shroomfall: {
     label: "Original Game",
     title: "Shroomfall",
-    subtitle: "A multiplayer active-ragdoll platformer built around expressive movement, physics-driven interaction, networking, and playful chaos.",
-    summary: "Shroomfall is my main original game project. The goal is to make physics-heavy gameplay feel expressive without becoming unreadable. A lot of the work is in turning unstable simulation into movement and interactions that still feel intentional, responsive, and funny in a good way.",
-    role: "Gameplay Programmer",
+    titleLogo: "ShroomfallLogo (1).png",
+    subtitle: "A solo-developed multiplayer active-ragdoll game built around host-authoritative networking, physics-first interaction, and expressive movement that still feels responsive.",
+    summary: "Shroomfall is a solo-developed multiplayer project built around a <span class='highlight-recruiter-red'>host-authoritative active ragdoll</span> instead of a traditional character controller. The core challenge has been making a fully physics-driven player still feel responsive in multiplayer, so I split responsibilities intentionally: the host owns movement, grounded state, jumping, damage, knockdowns, and body orientation, while clients mainly send input and render the replicated result. Around that, I built a <span class='highlight-recruiter-red'>custom movement stack</span> with separate ground and air acceleration, buffered jump, coyote time, jump-cutting, distance-based fall acceleration, and adaptive yaw steering so the character keeps its unstable ragdoll feel without becoming muddy or unplayable.",
+    role: "Solo Developer / Gameplay Programmer",
     type: "Original Project",
     focus: [
-      "Movement and player feel",
-      "Active ragdoll behavior",
-      "Networked gameplay systems",
-      "Physics interaction and readability"
+      "Host-authoritative multiplayer architecture",
+      "Active ragdoll player controller",
+      "Movement feel and gameplay responsiveness",
+      "Physics interaction systems",
+      "Animation-ragdoll blending",
+      "Networked environmental gameplay"
     ],
     tech: [
       "Unity",
       "Fusion networking",
-      "Host-authoritative gameplay",
+      "Host-authoritative simulation",
+      "Networked bone playback",
       "Physics-driven gameplay",
-      "Animation tuning and systems iteration"
+      "Animation-driven joint targets",
+      "Debug and tuning workflows"
     ],
     work: [
-      "Built and tuned multiplayer movement systems with a focus on readable physics and expressive control.",
-      "Implemented active ragdoll behavior and proxy playback so characters stay playful without losing responsiveness.",
-      "Iterated on jumping, grounding, and in-air stiffness to improve feel while respecting network authority.",
-      "Designed systemic interactions that create emergent moments instead of relying only on scripted sequences."
+      "Owned the full solo-dev gameplay and networking foundation for a multiplayer physics-first game, from controller architecture through interaction, consequence, and progression systems.",
+      "Built custom movement and state systems instead of relying on engine defaults, with a focus on tunable feel, readable ragdoll behavior, and multiplayer consistency.",
+      "Created <span class='highlight-recruiter-red'>networked interaction systems</span> for grabbing, fire, explosions, sockets, and portals so they behave like synchronized gameplay systems instead of isolated effects.",
+      "Developed the technical framework that lets networking, animation, ragdoll behavior, and physics support each other across the full player experience."
     ],
     deepDives: [
       {
-        title: "Networking and active ragdoll architecture",
-        body: "This section is meant for a deeper explanation of how you structured authority, synchronized bones, and handled proxy playback. Add screenshots, gifs, or diagrams showing the local player, host simulation, and remote proxy interpolation."
+        title: "Technical breakdown: authority model, simulation ownership, and movement stack",
+        body: "The player runtime is built around a <span class='highlight-recruiter-red'>host-authoritative multiplayer architecture</span> with explicit separation between input authority and simulation authority. The host resolves movement, grounded truth, jump execution, damage, knockdowns, and authored body orientation, while clients submit input and consume replicated state for presentation. On top of that authority split, I implemented a custom motor with separate ground and air acceleration paths, buffered jump windows, coyote time, variable-height jump cutting, distance-scaled extra fall acceleration, and state-dependent yaw steering. That let me preserve the nonlinear instability of a physics-driven character while still exposing clear tuning points for responsiveness, readability, and multiplayer consistency."
       },
       {
-        title: "Movement tuning and player feel",
-        body: "Use this dropdown to explain the tuning process for jump timing, coyote time, sprinting, air control, and how you balanced responsiveness against the chaos of a physics-based character."
+        title: "Technical breakdown: replicated bone state, ring-buffer interpolation, and proxy stability",
+        body: "For remote playback, I avoided full proxy-side physics simulation and instead built a host-written bone replication pipeline where driven local bone rotations are published into a network array each tick. Proxy instances reconstruct motion through a per-tick circular snapshot buffer with delayed render sampling, missed-tick backfilling, and quaternion slerp across adjacent snapshots. I also added large-angle snap protection and fallback handling so discontinuous motion does not smear, wobble, or visually desynchronize during fast impacts and abrupt state changes. The result is a <span class='highlight-recruiter-red'>ring-buffer interpolation pipeline</span> where gameplay truth stays centralized on the host, but remote characters still preserve the expressive secondary motion that sells the active ragdoll."
       },
       {
-        title: "Environmental interaction and systemic design",
-        body: "This section can break down an interaction set such as grabbing, bouncing, slingshot motion, or object-based traversal, including what was hard and how you made it readable for players."
+        title: "Technical breakdown: joint-drive blending, physical interaction, and networked consequence systems",
+        body: "The active ragdoll is not just replicated pose data; it is driven through animation-informed joint targets and dynamic stiffness control for head look, spine shaping, locomotion pose support, and air-to-ground drive blending. Around that, interaction systems are implemented as real physical attachments rather than fake parenting: each hand can create a fixed-joint latch at a contact point, classify dynamic versus kinematic attachment state, propagate effective carried mass, and release or break under force thresholds. Consequence systems then consume the same physical state, converting impact velocity into scaled landing damage, knockdown timing, and temporary impact posing, while environmental systems synchronize burn timers, material darkening, secondary ignition, radial force falloff, sockets, and portal transitions under server-owned state."
       }
     ],
     media: [
-      { title: "Hero gameplay clip", note: "Drop in a wide gif or video showing the core movement and character feel." },
-      { title: "Networking breakdown", note: "Use a screenshot, diagram, or short clip that supports the authority and proxy explanation." },
-      { title: "System spotlight", note: "Show one mechanic in detail, such as grabbing, ragdoll recovery, or traversal." }
+      { title: "Core movement clip", note: "Show the active ragdoll movement, jumping, and general player feel in a clean gameplay clip." },
+      { title: "Networking / proxy breakdown", note: "Use a gif, overlay, or diagram that explains host authority, replicated bones, and remote proxy playback." },
+      { title: "Interaction systems spotlight", note: "Show one system in detail, such as grabbing, hard landings, fire spread, or explosive chain reactions." }
     ],
-    impact: "This project shows how I approach systems-heavy gameplay work. It combines engineering, networking, animation awareness, and hands-on feel tuning in a way that maps directly to gameplay programming roles.",
+    impact: "Shroomfall shows my strongest gameplay engineering work as a solo developer: multiplayer architecture, custom movement, ragdoll networking, animation-physics blending, and <span class='highlight-recruiter-red'>systemic interaction design</span> all built to support the same physics-first game instead of feeling like isolated features.",
     bodyClass: "project-shroomfall",
     materialId: 0
   },
   axis: {
     label: "Professional Work",
-    title: "Axis Football",
-    subtitle: "Production gameplay work focused on tackle presentation, animation tuning, edge-case polish, and franchise feature support.",
-    summary: "At Axis Games, I worked on player-facing gameplay polish where timing, offsets, and readability mattered across many edge cases. A lot of the value came from repeated iteration on situations that were easy to miss individually but very noticeable to players when they happened in motion.",
-    role: "Gameplay / Animation Intern",
+    title: "Axis Football 27",
+    titleLogo: "AxisLogoSS (2).png",
+    subtitle: "Contributed to the release of Axis Football 27 through production gameplay, franchise systems work, large-scale tackle tuning, and player-facing presentation polish.",
+    summary: "At Axis Games, I contributed to the release of Axis Football 27 across both on-field gameplay presentation and franchise-mode systems. The biggest systems feature I owned was a <span class='highlight-recruiter-blue'>scalable franchise news pipeline</span> that turns live simulation data into context-aware in-game articles, while my gameplay work focused on tuning 50+ new tackle animations through X offset, Z offset, rotation, and frame-start adjustments so different tackle situations read better and feel more polished in motion.",
+    role: "Gameplay / Systems Intern",
     type: "Professional Experience",
     focus: [
-      "Gameplay readability",
-      "Tackle animation tuning",
-      "Edge-case iteration",
-      "Franchise feature support"
+      "Gameplay systems",
+      "Data-driven content generation",
+      "Runtime pipeline architecture",
+      "Template rendering and validation",
+      "Gameplay data integration",
+      "Debug tooling and iteration workflows",
+      "Animation tuning and presentation polish",
+      "Production collaboration"
     ],
     tech: [
-      "Unity workflow",
-      "Gameplay iteration",
-      "Animation polish",
-      "Production collaboration",
-      "System and presentation design"
+      "Unity / C# gameplay workflow",
+      "Data-driven systems design",
+      "Template-based content pipelines",
+      "Runtime validation and formatting",
+      "Debug tooling",
+      "Gameplay data integration",
+      "Franchise simulation support",
+      "Animation tuning"
     ],
     work: [
-      "Tuned tackle animations across goal-line, high-speed, sideline, and side-impact situations.",
-      "Adjusted offsets, timing, and rotation behavior to reduce awkward presentation and improve clarity.",
-      "Supported planning for an AI-assisted franchise article system built around template structure and data tags.",
-      "Worked in a production environment where polish depended on repeated testing and refinement across many scenarios."
+      "Owned franchise-mode systems work for a dynamic in-game news feature that turns simulation state into player-facing articles.",
+      "Built the supporting <span class='highlight-recruiter-blue'>content pipeline and debug workflow</span> needed to make a template-driven article system usable in production.",
+      "Expanded the authored article and tag coverage so the system could support a wider range of weekly franchise storylines.",
+      "Contributed on-field polish work by tuning 50+ tackle animations for cleaner alignment, timing, and situation-specific readability."
     ],
     deepDives: [
       {
-        title: "Tackle animation polish",
-        body: "Use this section to explain how you tuned offsets, rotation timing, and edge cases for different tackle contexts. This is a good place for side-by-side gifs or before and after clips."
+        title: "Technical breakdown: article pipeline architecture and runtime composition",
+        body: "The article system is structured as a <span class='highlight-recruiter-blue'>data-driven runtime pipeline</span> instead of a bundle of hardcoded news cases. Article content is split into reusable categories with separate headline and body template pools, then resolved at runtime into final UI-ready stories. The generation flow loads the valid article set for the current franchise week, filters against simulation context, checks whether required fields can be resolved, selects a compatible headline/body pairing, performs placeholder substitution, and emits formatted output for the news feed. That separation between authored content, validation, and rendering made the feature scale to 50+ article types and thousands of possible combinations without needing one-off scripts per story."
       },
       {
-        title: "Franchise article generation system",
-        body: "Break down the article template structure, priority logic, tag system, and how you thought about balancing authored content with lighter AI support."
+        title: "Technical breakdown: franchise context model, tag resolution, and validation tooling",
+        body: "A major technical problem was making authored templates bind to live franchise data reliably enough for production use. I built a franchise-week context model plus a <span class='highlight-recruiter-blue'>100+ tag resolution layer</span> that exposes gameplay-driven values to the renderer, including standings, streaks, rankings, injuries, trades, schedule context, leaders, and matchup story hooks. Validation runs before template selection, so the pipeline only chooses stories whose required fields can actually be resolved for the current week. I also added caching, hotkey-based regeneration, and tag inspection tooling so I could audit mappings, surface missing data, and expand content coverage without destabilizing runtime output."
       },
       {
-        title: "Working inside production constraints",
-        body: "Explain how you evaluated changes, communicated with the team, and iterated on work that had to fit an existing game instead of being built in isolation."
+        title: "Technical breakdown: tackle alignment tuning and presentation iteration",
+        body: "My gameplay-side contribution focused on the authored tuning layer for over 50 new tackle animations. For each tackle, I adjusted X offset, Z offset, rotation, and frame-start values so the clip would align more cleanly with the gameplay situation and contact timing. That tuning work was especially important for context-sensitive tackle cases tied to player velocity, mass, and field position, including sideline, goal-line, speed, and power scenarios. The workflow was highly iterative: evaluate the tackle in motion, identify alignment or timing failures, adjust the setup values, and retest until contact timing, body orientation, and overall field readability held up consistently."
       }
     ],
     media: [
-      { title: "Tackle presentation reel", note: "Add a gameplay gif or short video showing the kinds of tackle moments you tuned." },
-      { title: "Before / after polish", note: "Use this slot for comparison captures that make your iteration visible." },
-      { title: "Feature planning support", note: "Include a screenshot, mockup, or article system image if you want to show deeper systems work." }
+      { title: "Franchise news system", note: "Add a screenshot or short clip of the generated franchise articles inside the in-game news feed." },
+      { title: "Tag / template breakdown", note: "Show the template structure, supported tags, or a debug view that reveals how live franchise data maps into article output." },
+      { title: "Tackle polish reel", note: "Use a gameplay gif or short before-and-after clip to show the animation tuning and situation-specific tackle work." }
     ],
-    impact: "This work shows that I can contribute inside a real production pipeline and improve the parts of gameplay that players notice immediately, especially readability, polish, and presentation quality.",
+    impact: "This project shows both sides of production gameplay work: building a <span class='highlight-recruiter-blue'>shipped runtime content system</span> that turns simulation data into player-facing franchise content, and detailed on-field animation tuning that improves gameplay presentation.",
     bodyClass: "project-axis",
-    materialId: 2
+    materialId: 3
   },
   tools: {
     label: "Tools + Workflow",
@@ -197,7 +210,7 @@ const portfolioProjects = {
     ],
     impact: "This project broadens the portfolio beyond gameplay alone and shows applied ML thinking on a problem directly related to games, data, and technical analysis.",
     bodyClass: "project-aiml",
-    materialId: 3
+    materialId: 2
   }
 };
 
@@ -228,7 +241,7 @@ function renderList(el, items) {
   el.innerHTML = "";
   for (const item of items) {
     const li = document.createElement("li");
-    li.textContent = item;
+    li.innerHTML = item;
     el.appendChild(li);
   }
 }
@@ -265,7 +278,7 @@ function renderDeepDives(items) {
 
     const copy = document.createElement("p");
     copy.className = "deep-dive-copy";
-    copy.textContent = item.body;
+    copy.innerHTML = item.body;
 
     body.appendChild(copy);
     details.appendChild(summary);
@@ -293,12 +306,17 @@ function openProject(projectId) {
   }
 
   projectViewLabel.textContent = project.label;
-  projectViewTitle.textContent = project.title;
+  if (project.titleLogo) {
+    const extraClass = projectId === "shroomfall" ? " project-view-title-logo-shroomfall" : "";
+    projectViewTitle.innerHTML = `<img class="project-view-title-logo${extraClass}" src="${project.titleLogo}" alt="${project.title}">`;
+  } else {
+    projectViewTitle.textContent = project.title;
+  }
   projectViewSubtitle.textContent = project.subtitle;
   projectRole.textContent = project.role;
   projectType.textContent = project.type;
-  projectSummary.textContent = project.summary;
-  projectImpact.textContent = project.impact;
+  projectSummary.innerHTML = project.summary;
+  projectImpact.innerHTML = project.impact;
 
   renderList(projectFocusList, project.focus);
   renderList(projectTechList, project.tech);
