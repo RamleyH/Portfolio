@@ -4,188 +4,198 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ram H Portfolio</title>
-
+  <title>Ramley Hirneisen | Gameplay Programmer</title>
+  <meta name="description"
+    content="Portfolio of Ramley Hirneisen, a gameplay programmer focused on gameplay systems, tools, technical design, networking, and applied machine learning." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Anton&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
-
-  <style>
-    body {
-      margin: 0;
-      overflow: hidden;
-      background: #000;
-      color: white;
-      font-family: Arial, sans-serif;
-    }
-
-    #simCanvas {
-      position: fixed;
-      inset: 0;
-      width: 100vw;
-      height: 100vh;
-      display: block;
-      z-index: 0;
-    }
-
-    .page-overlay {
-      position: relative;
-      z-index: 2;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      pointer-events: none;
-    }
-
-    .hero {
-      padding: 5rem 4rem 2rem 4rem;
-      max-width: 900px;
-    }
-
-    .hero h1 {
-      margin: 0;
-      font-size: clamp(3rem, 8vw, 6rem);
-      line-height: 0.95;
-      letter-spacing: -0.04em;
-    }
-
-    .hero p {
-      margin-top: 1rem;
-      font-size: clamp(1rem, 2vw, 1.25rem);
-      color: rgba(255, 255, 255, 0.82);
-      max-width: 650px;
-    }
-
-    .hero-links {
-      margin-top: 1.5rem;
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      pointer-events: auto;
-    }
-
-    .hero-links a {
-      color: white;
-      text-decoration: none;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      padding: 0.85rem 1.2rem;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.06);
-      transition: background 0.2s ease, border-color 0.2s ease;
-    }
-
-    .hero-links a:hover {
-      background: rgba(255, 255, 255, 0.12);
-      border-color: rgba(255, 255, 255, 0.35);
-    }
-
-    .project-row {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(240px, 360px));
-      gap: 1.25rem;
-      padding: 0 4rem 3rem 4rem;
-      justify-content: start;
-      pointer-events: auto;
-    }
-
-    .project-card {
-      background: rgba(10, 10, 10, 0.45);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      backdrop-filter: blur(8px);
-      border-radius: 22px;
-      padding: 1.25rem;
-      min-height: 150px;
-      text-decoration: none;
-      color: white;
-      transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
-    }
-
-    .project-card:hover {
-      transform: translateY(-3px);
-      background: rgba(20, 20, 20, 0.58);
-      border-color: rgba(255, 255, 255, 0.25);
-    }
-
-    .project-card h2 {
-      margin: 0 0 0.5rem 0;
-      font-size: 1.4rem;
-    }
-
-    .project-card p {
-      margin: 0;
-      color: rgba(255, 255, 255, 0.75);
-      line-height: 1.45;
-    }
-
-    .shroomfall:hover {
-      box-shadow: 0 0 40px rgba(255, 70, 100, 0.12);
-    }
-
-    .axis:hover {
-      box-shadow: 0 0 40px rgba(60, 255, 120, 0.12);
-    }
-
-    /* Hidden config elements so your existing run_0.js still works */
-    #simConfig {
-      display: none;
-    }
-
-    @media (max-width: 900px) {
-      .hero {
-        padding: 4rem 1.5rem 2rem 1.5rem;
-      }
-
-      .project-row {
-        grid-template-columns: 1fr;
-        padding: 0 1.5rem 2rem 1.5rem;
-      }
-    }
-  </style>
 </head>
 
 <body>
-  <canvas id="simCanvas"></canvas>
+  <canvas id="simCanvas" aria-hidden="true"></canvas>
 
   <div class="page-overlay">
-    <section class="hero">
-      <h1>Ram H</h1>
-      <p>
-        Gameplay programmer focused on interactive systems, physics-driven gameplay,
-        and expressive player feel.
-      </p>
+    <div class="ambient-tint" aria-hidden="true"></div>
 
-      <div class="hero-links">
-        <a href="#projects">Projects</a>
-        <a href="resume.pdf" target="_blank" rel="noopener">Resume</a>
-        <a href="mailto:you@example.com">Contact</a>
+    <header class="site-header">
+      <div class="site-mark">Ramley Hirneisen</div>
+      <nav class="site-nav" aria-label="Primary">
+        <a class="site-nav-link site-nav-resume" href="resume.pdf" target="_blank" rel="noopener">Resume</a>
+        <a class="site-nav-link site-nav-linkedin" href="https://www.linkedin.com/in/ramley-hirneisen" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="site-nav-link site-nav-github" href="https://github.com/RamleyH" target="_blank" rel="noopener">GitHub</a>
+        <a class="site-nav-link site-nav-gmail" href="https://mail.google.com/mail/?view=cm&fs=1&to=rahramley@gmail.com" target="_blank" rel="noopener">Gmail</a>
+        <a class="site-nav-link site-nav-discord" href="https://discord.com/app" target="_blank" rel="noopener">Discord</a>
+      </nav>
+    </header>
+
+    <main class="main-layout" id="landingView">
+      <section class="hero hero-split" id="top">
+        <div class="hero-panel">
+          <div class="hero-copy-column">
+            <p class="eyebrow">Gameplay Programmer</p>
+            <h1>
+              <span class="name-primary">Ramley</span>
+              <span class="name-accent">Hirneisen</span>
+            </h1>
+            <p class="hero-subtitle">
+              I build gameplay systems, tools, and technical workflows with a focus on clarity, responsiveness, and polished player-facing interaction.
+            </p>
+
+            <p class="hero-support-copy">
+              My work sits between engineering and design: gameplay feel, networking, debugging tools, iteration workflows, and data-informed systems. I like building mechanics that are expressive to play, easy to tune, and understandable for both teammates and players.
+            </p>
+
+            <p class="hero-support-copy hero-support-copy-secondary">
+              I’m primarily targeting technical design and tools programming roles, while also applying to gameplay engineering, broader computer science positions, and selected AI / ML opportunities where applied problem solving matters.
+            </p>
+
+            <div class="hero-meta" aria-label="Highlights">
+              <span>Technical design</span>
+              <span>Tools programming</span>
+              <span>Gameplay systems</span>
+              <span>Editor tooling</span>
+              <span>Debug visualization</span>
+              <span>Networked gameplay</span>
+              <span>Systems design</span>
+              <span>Gameplay polish</span>
+              <span>Data-driven iteration</span>
+            </div>
+          </div>
+
+          <div class="hero-portrait-column" aria-hidden="true">
+            <img class="hero-portrait" src="portrait-ramley.png" alt="" />
+          </div>
+        </div>
+      </section>
+
+      <section class="projects-section" id="projects">
+        <div class="section-heading">
+          <p class="eyebrow">Selected Work</p>
+          <h2>Projects</h2>
+          <p class="section-copy">Gameplay systems, production work, internal tools, and applied ML projects.</p>
+        </div>
+
+        <div class="project-grid">
+          <button class="project-card shroomfall" type="button" data-project="shroomfall" aria-controls="projectView">
+            <span class="project-accent"></span>
+            <span class="project-kicker">Original Game</span>
+            <h3><span class="title-accent title-accent-red">Shroomfall</span></h3>
+            <p>
+              Multiplayer active-ragdoll platforming built around movement expression, networking, physics interaction,
+              and playful systemic chaos.
+            </p>
+            <span class="project-cta">Open case study</span>
+          </button>
+
+          <button class="project-card axis" type="button" data-project="axis" aria-controls="projectView">
+            <span class="project-accent"></span>
+            <span class="project-kicker">Professional Work</span>
+            <h3><span class="title-accent title-accent-green">Axis Football</span></h3>
+            <p>
+              Production gameplay work focused on tackle animation tuning, edge-case polish, and in-game article system
+              planning for franchise presentation.
+            </p>
+            <span class="project-cta">Open case study</span>
+          </button>
+
+          <button class="project-card tools" type="button" data-project="tools" aria-controls="projectView">
+            <span class="project-accent"></span>
+            <span class="project-kicker">Tools + Workflow</span>
+            <h3><span class="title-accent title-accent-yellow">Gameplay / Design Tools</span></h3>
+            <p>
+              Internal tooling focused on iteration speed, debug visibility, tuning workflows, and clearer systems for development.
+            </p>
+            <span class="project-cta">Open case study</span>
+          </button>
+
+          <button class="project-card aiml" type="button" data-project="aiml" aria-controls="projectView">
+            <span class="project-accent"></span>
+            <span class="project-kicker">AI / ML</span>
+            <h3><span class="title-accent title-accent-blue">Steam Metadata ML</span></h3>
+            <p>
+              Machine learning analysis predicting Steam review sentiment from pre-release metadata using feature engineering and model comparison.
+            </p>
+            <span class="project-cta">Open case study</span>
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <section class="project-view" id="projectView" aria-live="polite" aria-hidden="true">
+      <div class="project-view-shell">
+        <div class="project-banner">
+          <button class="back-button" id="projectBack" type="button" aria-label="Back to portfolio">← Back</button>
+
+          <div class="project-title-block">
+            <p class="project-view-label" id="projectViewLabel">Project</p>
+            <h2 id="projectViewTitle">Choose a project</h2>
+            <p id="projectViewSubtitle">Select a project to open a dedicated case study view.</p>
+          </div>
+
+          <div class="project-banner-meta">
+            <div class="banner-chip">
+              <span class="banner-chip-label">Role</span>
+              <span id="projectRole">Gameplay Programmer</span>
+            </div>
+            <div class="banner-chip">
+              <span class="banner-chip-label">Type</span>
+              <span id="projectType">Portfolio Work</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-content-grid">
+          <section class="content-card content-card-wide">
+            <p class="content-label">Overview</p>
+            <p id="projectSummary">Project details will appear here.</p>
+          </section>
+
+          <section class="content-card">
+            <p class="content-label">Focus Areas</p>
+            <ul id="projectFocusList"></ul>
+          </section>
+
+          <section class="content-card">
+            <p class="content-label">Tech + Discipline</p>
+            <ul id="projectTechList"></ul>
+          </section>
+
+          <section class="content-card content-card-wide media-card">
+            <div class="media-card-header">
+              <p class="content-label">Media</p>
+              <span class="media-note">Replace these placeholders with screenshots, gifs, or videos.</span>
+            </div>
+            <div class="media-grid" id="projectMediaGrid"></div>
+          </section>
+
+          <section class="content-card content-card-wide">
+            <p class="content-label">What I worked on</p>
+            <ul id="projectWorkList"></ul>
+          </section>
+
+          <section class="content-card content-card-wide">
+            <p class="content-label">Deep Dives</p>
+            <div class="deep-dive-list" id="projectDeepDives"></div>
+          </section>
+
+          <section class="content-card content-card-wide">
+            <p class="content-label">Why it matters</p>
+            <p id="projectImpact"></p>
+          </section>
+        </div>
       </div>
-    </section>
-
-    <section class="project-row" id="projects">
-      <a class="project-card shroomfall" href="#">
-        <h2>Shroomfall</h2>
-        <p>
-          Multiplayer active-ragdoll platforming with expressive movement,
-          physics interactions, and playful environmental mechanics.
-        </p>
-      </a>
-
-      <a class="project-card axis" href="#">
-        <h2>Axis Football</h2>
-        <p>
-          Gameplay animation, tackle tuning, and systemic feature work focused on
-          feel, readability, and in-game presentation.
-        </p>
-      </a>
     </section>
   </div>
 
-  <!-- Hidden sim settings required by existing run_0.js -->
   <div id="simConfig" aria-hidden="true">
     <p id="fps">FPS: 0</p>
 
     <select id="numParticles">
       <option value="1000">1K</option>
-      <option value="2000" selected>2K</option>
+      <option value="2000">2K</option>
+      <option value="2500" selected>2.5K</option>
       <option value="3000">3K</option>
       <option value="4000">4K</option>
     </select>
@@ -242,5 +252,4 @@
   <script src="sim_5.js"></script>
   <script src="run_0.js"></script>
 </body>
-
 </html>
