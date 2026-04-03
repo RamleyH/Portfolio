@@ -4,13 +4,13 @@ let numParticles = 2200;
 
 const portfolioProjects = {
   shroomfall: {
-    label: "Original Game",
+    label: "Indie Game",
     title: "Shroomfall",
     titleLogo: "ShroomfallLogo (1).png",
-    subtitle: "A solo-developed multiplayer active-ragdoll game built around host-authoritative networking, physics-first interaction, and expressive movement that still feels responsive.",
+    subtitle: "A solo-developed multiplayer active-ragdoll game built around host-authoritative networking, physics-first interaction, and expressive movement that still feels responsive. In active solo development since October 2025, focused on building toward a full playable release.",
     summary: "Shroomfall is a solo-developed multiplayer project built around a <span class='highlight-recruiter-red'>host-authoritative active ragdoll</span> instead of a traditional character controller. The core challenge has been making a fully physics-driven player still feel responsive in multiplayer, so I split responsibilities intentionally: the host owns movement, grounded state, jumping, damage, knockdowns, and body orientation, while clients mainly send input and render the replicated result. Around that, I built a <span class='highlight-recruiter-red'>custom movement stack</span> with separate ground and air acceleration, buffered jump, coyote time, jump-cutting, distance-based fall acceleration, and adaptive yaw steering so the character keeps its unstable ragdoll feel without becoming muddy or unplayable.",
     role: "Solo Developer / Gameplay Programmer",
-    type: "Original Project",
+    type: "Indie Project",
     focus: [
       "Host-authoritative multiplayer architecture",
       "Active ragdoll player controller",
@@ -36,22 +36,22 @@ const portfolioProjects = {
     ],
     deepDives: [
       {
-        title: "Technical breakdown: authority model, simulation ownership, and movement stack",
-        body: "The player runtime is built around a <span class='highlight-recruiter-red'>host-authoritative multiplayer architecture</span> with explicit separation between input authority and simulation authority. The host resolves movement, grounded truth, jump execution, damage, knockdowns, and authored body orientation, while clients submit input and consume replicated state for presentation. On top of that authority split, I implemented a custom motor with separate ground and air acceleration paths, buffered jump windows, coyote time, variable-height jump cutting, distance-scaled extra fall acceleration, and state-dependent yaw steering. That let me preserve the nonlinear instability of a physics-driven character while still exposing clear tuning points for responsiveness, readability, and multiplayer consistency."
+        title: "Technical breakdown: host-authoritative movement stack, active-ragdoll locomotion, and physical traversal",
+        body: "The movement system is built specifically for a <span class='highlight-recruiter-red'>physics-based active ragdoll</span>, not a normal capsule controller or a single rigidbody with forces layered on top. The player body is a connected physical structure driven by a root rigidbody, multiple limb bodies, configurable joints, animation-fed joint targets, grab states, slingshot launches, impact recovery, and active-versus-limp transitions, so locomotion had to cooperate with the rest of that chain instead of bypassing it. I originally explored a more typical client-predicted approach, but that ended up being a poor fit for a heavily jointed body where small differences in contact resolution, latch timing, posture, or impulse response created visible corrections and instability. The final system is therefore <span class='highlight-recruiter-red'>fully host-authoritative</span>: the input owner packages movement, jump, sprint, grab, and look intent into network input, while the host computes grounded truth, body yaw, jump legality, fall shaping, landing consequences, and the final physical motion result. Inside that authority-owned loop, <span class='highlight-recruiter-red'>MovementControl</span> acts as the real motor. Ground and air are handled separately through velocity shaping rather than transform warping, with explicit ground acceleration and braking, a more constrained air-control model that respects takeoff momentum, sprint latching, jump buffering, coyote time, jump cut on early release, extra downward stick, and distance-based fall acceleration so the body can stay responsive without losing its unstable ragdoll character. Facing is part of the movement model too: the host rotates a networked body-yaw value toward aim input and drives the main joint toward that orientation, with turn rate reduced in air, while carrying heavier objects, or while both hands are latched to kinematic anchors. Movement posture is also fed back into the ragdoll through head and spine targets, airborne stiffness blending, and animation parameters that support locomotion without replacing the physical body. Special traversal follows the same philosophy rather than cheating around it. Aerial jumps can release dual kinematic hand latches before applying force, hard landings convert movement outcome into damage and knockdown state, and the slingshot mechanic works as a dedicated sub-mode that charges through physical attachment state, releases both hands, applies host-side launch velocity and torque, temporarily changes ragdoll behavior, and then recovers back into the normal locomotion loop. The result is a <span class='highlight-recruiter-red'>single connected movement architecture</span> where traversal, posture, recovery, jump forgiveness, and ragdoll state all reinforce each other, while the networking model stays matched to the kind of body the game is actually simulating."
       },
       {
-        title: "Technical breakdown: replicated bone state, ring-buffer interpolation, and proxy stability",
-        body: "For remote playback, I avoided full proxy-side physics simulation and instead built a host-written bone replication pipeline where driven local bone rotations are published into a network array each tick. Proxy instances reconstruct motion through a per-tick circular snapshot buffer with delayed render sampling, missed-tick backfilling, and quaternion slerp across adjacent snapshots. I also added large-angle snap protection and fallback handling so discontinuous motion does not smear, wobble, or visually desynchronize during fast impacts and abrupt state changes. The result is a <span class='highlight-recruiter-red'>ring-buffer interpolation pipeline</span> where gameplay truth stays centralized on the host, but remote characters still preserve the expressive secondary motion that sells the active ragdoll."
+        title: "Technical breakdown: physically-staged customization pipeline, preview separation, and multiplayer replication",
+        body: "I wanted customization to feel like an <span class='highlight-recruiter-red'>interactive in-world system</span> instead of a flat menu that just swaps colors and face icons. To do that, I split the feature into clean layers with different responsibilities. <span class='highlight-recruiter-red'>ShroomCustomizerMPB</span> is the rendering core for a single avatar or preview shroom: it applies masked body, cap, and spot colors through <span class='highlight-recruiter-red'>MaterialPropertyBlocks</span> so each player can have unique colors without duplicating runtime materials, switches eye variants through GameObject sets, swaps mouth textures through a property block on the mouth quad, and can drive temporary emission feedback while a change is still “in transit.” The important architecture decision is that preview state and committed state are separate. The additive overlay edits a dedicated preview avatar, not the live networked player, so the player can experiment freely without polluting session state or other clients. Color changes also are not hard-set immediately every frame. The wheel controller samples a color from a 3D raycast-driven wheel, routes it into body, cap, or spots, then the preview customizer pushes that value into a <span class='highlight-recruiter-red'>pending -> queued sample -> delayed target -> visible color motion</span> pipeline. Small color jitter is filtered out, queued samples are released after a configurable travel delay, the visible colors lerp toward those delayed targets, and emission renderers light with the pending color while the change is still moving. That gave the whole system a much more physical and visually authored feel than a normal RGB picker. Face customization uses a different interaction model entirely: draggable eye and mouth stickers preview only while hovering a valid drop zone, revert safely on invalid release, and commit only on a valid drop, which made trying options feel playful without accidental changes. On apply, the preview avatar exports a compact <span class='highlight-recruiter-red'>ShroomData</span> payload, writes it to local persistence, immediately updates the live local avatar for responsiveness, and sends the same packed RGBA and face-index state into Fusion network properties so every client reconstructs the same committed look through its own local customizer. That separation between rendering, preview UX, saved preference, and authoritative replication made the feature feel much more polished than a standard menu while still staying efficient and maintainable in multiplayer."
       },
       {
-        title: "Technical breakdown: joint-drive blending, physical interaction, and networked consequence systems",
-        body: "The active ragdoll is not just replicated pose data; it is driven through animation-informed joint targets and dynamic stiffness control for head look, spine shaping, locomotion pose support, and air-to-ground drive blending. Around that, interaction systems are implemented as real physical attachments rather than fake parenting: each hand can create a fixed-joint latch at a contact point, classify dynamic versus kinematic attachment state, propagate effective carried mass, and release or break under force thresholds. Consequence systems then consume the same physical state, converting impact velocity into scaled landing damage, knockdown timing, and temporary impact posing, while environmental systems synchronize burn timers, material darkening, secondary ignition, radial force falloff, sockets, and portal transitions under server-owned state."
+        title: "Technical breakdown: host-authoritative ragdoll architecture, proxy playback, and world-state integration",
+        body: "The broader multiplayer architecture is built around a <span class='highlight-recruiter-red'>host-authoritative active ragdoll</span> rather than a normal controller that just synchronizes a transform and a few booleans. <span class='highlight-recruiter-red'>NetworkPlayer</span> separates input authority from state authority so the local player submits intent, but the host owns the real gameplay truth: health, death, active-versus-limp state, portal transition state, grounded state, body yaw, grab state, and the final local rotations of the tracked ragdoll bones. The most important networking decision is that I am not trying to keep a full physical ragdoll simulation alive on every proxy. On non-authoritative instances, rigidbodies are zeroed and made kinematic, gravity and collisions are disabled, colliders are turned off, and joints are stripped so remote players become intentionally <span class='highlight-recruiter-red'>de-physicalized visual replicas</span> instead of unstable second simulations fighting the host. The host publishes the resulting local rotations of tracked bones into a network array each tick, and proxies reconstruct that result through buffered playback: they store replicated snapshots in a per-tick ring buffer, backfill missed ticks when needed, render from a small delay, slerp between adjacent snapshots, and snap when angles diverge too far. That gives remote characters continuity and readable secondary motion without the solver divergence, collision conflicts, and correction noise that would come from fully distributed ragdoll physics. The same authority pattern extends outward into the rest of the game. Hazards and interactables do not reach deep into player internals from random places; systems such as fire, explosions, and portals feed through narrow authoritative entry points for damage, knockdown, impulses, and transition state. Durable gameplay truth lives in replicated properties and timers, while one-shot audiovisual moments are fanned out with RPCs. Portal activation, countdowns, forced arrivals, teleports, and scene swaps all follow that same state-plus-RPC split, and authority-side teleports are paired with local correction on the input owner so the transition still feels immediate. The result is a multiplayer architecture that preserves the identity of a messy, physical active ragdoll character while staying far more stable, readable, and shippable than trying to simulate the full body independently on every machine."
       }
     ],
     media: [
-      { title: "Core movement clip", note: "Show the active ragdoll movement, jumping, and general player feel in a clean gameplay clip." },
-      { title: "Networking / proxy breakdown", note: "Use a gif, overlay, or diagram that explains host authority, replicated bones, and remote proxy playback." },
-      { title: "Interaction systems spotlight", note: "Show one system in detail, such as grabbing, hard landings, fire spread, or explosive chain reactions." }
+      { title: "Gameplay Systems", type: "video", src: "ShroomFallGameplay.mp4", note: "Active ragdoll movement, grabbing, slingshot, fall splat, portals, fire spread, and other core gameplay systems." },
+      { title: "Multiplayer", type: "video", src: "ShroomFallMultiplayer (1).mp4", note: "Networking and multiplayer behavior with several players in a shared test scene." },
+      { title: "Customization", type: "video", src: "ShroomFallCustomizationVid.mp4", note: "Character customization flow and presentation." }
     ],
     impact: "Shroomfall shows my strongest gameplay engineering work as a solo developer: multiplayer architecture, custom movement, ragdoll networking, animation-physics blending, and <span class='highlight-recruiter-red'>systemic interaction design</span> all built to support the same physics-first game instead of feeling like isolated features.",
     bodyClass: "project-shroomfall",
@@ -115,12 +115,12 @@ const portfolioProjects = {
     materialId: 3
   },
   tools: {
-    label: "Tools + Workflow",
+    label: "Focused Project",
     title: "Gameplay / Design Tools",
     subtitle: "Internal tooling focused on faster iteration, clearer debugging, and more usable workflows for design and gameplay development.",
     summary: "This section is meant to collect tools work that supports development directly: tuning utilities, debug visualization, workflow helpers, and systems that make iteration faster and clearer. Even when the tool itself is small, the value is in how much easier it makes building and balancing features.",
     role: "Tools / Technical Design",
-    type: "Internal Tooling",
+    type: "Focused Portfolio Project",
     focus: [
       "Iteration speed",
       "Debug visibility",
@@ -164,12 +164,12 @@ const portfolioProjects = {
     materialId: 1
   },
   aiml: {
-    label: "AI / ML",
+    label: "Focused Project",
     title: "Steam Metadata ML",
     subtitle: "A machine learning project predicting Steam review sentiment using pre-release metadata rather than gameplay footage or player-written review text.",
     summary: "This project explored whether a game’s review outcome could be predicted from metadata alone, using information like price, genres, categories, achievements, and platform support. I cleaned the dataset, engineered 81 metadata features, and compared multiple classifiers to see how much signal exists before a game even launches.",
     role: "ML / Data Project",
-    type: "Applied Machine Learning",
+    type: "Focused Portfolio Project",
     focus: [
       "Feature engineering",
       "Dataset cleaning",
@@ -246,11 +246,73 @@ function renderList(el, items) {
   }
 }
 
+function pauseAllMedia(except = null) {
+  const videos = projectMediaGrid.querySelectorAll("video");
+  videos.forEach((video) => {
+    if (video !== except) {
+      video.pause();
+      video.currentTime = 0;
+    }
+  });
+}
+
 function renderMedia(items) {
   projectMediaGrid.innerHTML = "";
+  const hasVideo = items.some((item) => item.type === "video");
+  projectMediaGrid.classList.toggle("media-grid-video-large", hasVideo);
+
   for (const item of items) {
     const slot = document.createElement("div");
     slot.className = "media-slot";
+
+    if (item.type === "video") {
+      slot.classList.add("media-slot-video");
+
+      const frame = document.createElement("div");
+      frame.className = "media-video-frame";
+
+      const video = document.createElement("video");
+      video.className = "media-video";
+      video.src = item.src;
+      video.preload = "metadata";
+      video.muted = true;
+      video.loop = true;
+      video.playsInline = true;
+      video.setAttribute("webkit-playsinline", "");
+      video.setAttribute("aria-label", item.title);
+
+      const overlay = document.createElement("div");
+      overlay.className = "media-video-overlay";
+      overlay.textContent = "Hover to play";
+
+      frame.appendChild(video);
+      frame.appendChild(overlay);
+      slot.appendChild(frame);
+
+      const playVideo = () => {
+        pauseAllMedia(video);
+        const promise = video.play();
+        if (promise && typeof promise.catch === "function") {
+          promise.catch(() => {});
+        }
+      };
+
+      const stopVideo = () => {
+        video.pause();
+        video.currentTime = 0;
+      };
+
+      slot.addEventListener("mouseenter", playVideo);
+      slot.addEventListener("mouseleave", stopVideo);
+      slot.addEventListener("focusin", playVideo);
+      slot.addEventListener("focusout", stopVideo);
+      video.addEventListener("ended", () => {
+        video.currentTime = 0;
+      });
+    }
+
+    const meta = document.createElement("div");
+    meta.className = "media-slot-copy";
 
     const title = document.createElement("strong");
     title.textContent = item.title;
@@ -258,8 +320,9 @@ function renderMedia(items) {
     const note = document.createElement("span");
     note.textContent = item.note;
 
-    slot.appendChild(title);
-    slot.appendChild(note);
+    meta.appendChild(title);
+    meta.appendChild(note);
+    slot.appendChild(meta);
     projectMediaGrid.appendChild(slot);
   }
 }
@@ -328,6 +391,7 @@ function openProject(projectId) {
 }
 
 function closeProject() {
+  pauseAllMedia();
   activeProjectId = null;
   document.body.classList.remove("project-open");
   projectView.setAttribute("aria-hidden", "true");

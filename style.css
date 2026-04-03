@@ -173,7 +173,7 @@ canvas { display: block; }
   gap: 0.1rem;
   font-family: "Anton", Impact, Arial Black, sans-serif;
   font-size: clamp(4rem, 7vw, 6.35rem);
-  letter-spacing: -0.025em;
+  letter-spacing: 0.005em;
   text-transform: uppercase;
 }
 .name-primary, .name-accent { color: rgba(255,255,255,0.98); }
@@ -268,7 +268,9 @@ canvas { display: block; }
   position: relative;
   overflow: hidden;
   min-height: 100%;
-  padding: 1.15rem 1.2rem 1.05rem;
+  padding: 1.15rem 1.2rem 1.12rem;
+  display: flex;
+  flex-direction: column;
   text-align: left;
   color: var(--text);
   cursor: pointer;
@@ -280,10 +282,13 @@ canvas { display: block; }
   background: rgba(14, 18, 25, 0.8);
 }
 .project-card h3 { margin: 0 0 0.65rem; font-size: 1.9rem; }
-.project-card p { margin: 0; font-size: 0.96rem; line-height: 1.55; max-width: 58ch; }
+.project-card p { margin: auto 0 0; font-size: 0.96rem; line-height: 1.55; max-width: 58ch; }
 
 .project-logo-title-wrap {
-  margin: 0 0 0.8rem;
+  margin: 0.12rem 0 1rem;
+  min-height: 88px;
+  display: flex;
+  align-items: flex-start;
 }
 .project-logo-title {
   display: block;
@@ -291,12 +296,14 @@ canvas { display: block; }
   height: auto;
 }
 .project-logo-title-axis {
+  width: min(100%, 230px);
+  margin-top: 0.4rem;
   filter: drop-shadow(0 8px 18px rgba(0,0,0,0.28));
 }
 .project-logo-title-shroomfall {
-  width: min(100%, 360px);
-  margin-top: -0.05rem;
-  margin-bottom: -0.15rem;
+  width: min(100%, 306px);
+  margin-top: 0.1rem;
+  margin-bottom: 0;
   filter: drop-shadow(0 10px 22px rgba(0,0,0,0.26));
 }
 .project-view-title-logo {
@@ -338,6 +345,27 @@ canvas { display: block; }
 
 .project-card.axis p {
   max-width: 52ch;
+}
+
+.project-card.tools,
+.project-card.aiml {
+  background: rgba(10, 13, 18, 0.54);
+  border-color: rgba(255,255,255,0.075);
+}
+
+.project-card.tools h3,
+.project-card.aiml h3 {
+  font-size: 1.76rem;
+}
+
+.project-card.tools .project-kicker,
+.project-card.aiml .project-kicker {
+  color: rgba(255,255,255,0.42);
+}
+
+.project-card.tools p,
+.project-card.aiml p {
+  color: rgba(255,255,255,0.68);
 }
 
 .project-view {
@@ -437,6 +465,7 @@ body.project-aiml .project-view-label { color: var(--green); }
   .hero-panel, .project-content-grid, .project-grid, .media-grid {
     grid-template-columns: 1fr;
   }
+  .project-logo-title-wrap { min-height: 0; }
   .hero { min-height: auto; }
   .hero-panel { padding-bottom: 0.2rem; }
   .hero-portrait {
@@ -488,4 +517,77 @@ body.project-aiml .project-view-label { color: var(--green); }
     bottom: -8px;
     max-height: 80vh;
   }
+}
+
+.media-slot-video {
+  padding: 0.9rem;
+  align-content: start;
+}
+.media-video-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.16);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+  background: rgba(0,0,0,0.28);
+  aspect-ratio: 16 / 9;
+}
+.media-video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #090b10;
+}
+.media-video-overlay {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 0.65rem 0.8rem;
+  background: linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,0.72));
+  color: rgba(255,255,255,0.9);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+.media-slot-video:hover .media-video-overlay,
+.media-slot-video:focus-within .media-video-overlay {
+  opacity: 0;
+}
+.media-slot-copy {
+  display: grid;
+  gap: 0.42rem;
+}
+.media-slot-video .media-slot-copy {
+  margin-top: 0.85rem;
+}
+
+.media-grid.media-grid-video-large {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.media-grid.media-grid-video-large .media-slot-video:first-child {
+  grid-column: 1 / -1;
+}
+.media-grid.media-grid-video-large .media-video-frame {
+  aspect-ratio: 16 / 9;
+  min-height: 320px;
+}
+.media-grid.media-grid-video-large .media-slot-video:not(:first-child) .media-video-frame {
+  min-height: 260px;
+}
+@media (max-width: 900px) {
+  .media-grid.media-grid-video-large {
+    grid-template-columns: 1fr;
+  }
+  .media-grid.media-grid-video-large .media-slot-video:first-child {
+    grid-column: auto;
+  }
+  .media-grid.media-grid-video-large .media-video-frame,
+  .media-grid.media-grid-video-large .media-slot-video:not(:first-child) .media-video-frame {
+    min-height: 220px;
+  }
+}
+.media-slot-video .media-slot-copy {
+  margin-top: 0.85rem;
 }
