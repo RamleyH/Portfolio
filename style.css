@@ -337,6 +337,11 @@ canvas { display: block; }
   font-weight: 700;
 }
 
+.highlight-recruiter-green {
+  color: var(--green);
+  font-weight: 700;
+}
+
 .shroomfall .project-accent { background: linear-gradient(180deg, rgba(255,64,64,0.9), rgba(255,64,64,0.15)); }
 .axis .project-accent { background: linear-gradient(180deg, rgba(90,162,255,0.95), rgba(90,162,255,0.15)); }
 .tools .project-accent { background: linear-gradient(180deg, rgba(244,197,66,0.95), rgba(244,197,66,0.15)); }
@@ -394,6 +399,57 @@ canvas { display: block; }
   margin: 0 auto;
   padding-top: 2rem;
 }
+
+.project-view-background-figures {
+  position: fixed;
+  inset: 0;
+  z-index: 9;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+
+.project-bg-figure {
+  position: absolute;
+  bottom: 0;
+  height: min(92vh, 980px);
+  width: auto;
+  object-fit: contain;
+  opacity: 0.27;
+  filter: grayscale(1) contrast(1.12) brightness(1.2);
+  mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.95) 18%, rgba(0,0,0,0.92) 80%, transparent 100%), linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.95) 16%, rgba(0,0,0,0.95) 84%, transparent 100%);
+  mask-composite: intersect;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.95) 18%, rgba(0,0,0,0.92) 80%, transparent 100%), linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.95) 16%, rgba(0,0,0,0.95) 84%, transparent 100%);
+  -webkit-mask-composite: source-in;
+}
+
+.project-bg-figure-left {
+  left: max(-3vw, -38px);
+  transform: translateX(-1.5%) scale(1.02);
+}
+
+.project-bg-figure-right {
+  right: max(-3vw, -32px);
+  transform: translateX(1.5%) scale(1.01);
+}
+
+body.project-open.project-axis .project-view-background-figures {
+  opacity: 1;
+}
+
+body.project-open.project-axis .project-view-background-figures::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(5,7,10,0.9) 0%, rgba(5,7,10,0.36) 18%, rgba(5,7,10,0.18) 32%, rgba(5,7,10,0.18) 68%, rgba(5,7,10,0.36) 82%, rgba(5,7,10,0.9) 100%);
+}
+
+body.project-open.project-axis .project-view-shell {
+  position: relative;
+  z-index: 11;
+}
 .project-banner {
   position: relative;
   display: grid;
@@ -443,14 +499,122 @@ canvas { display: block; }
 .media-slot strong { font-size: 1.05rem; }
 .media-slot span { color: var(--muted); }
 .deep-dive-list { display: grid; gap: 0.85rem; }
+.deep-dive {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+.deep-dive::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: rgba(255,255,255,0.12);
+  transition: background 0.2s ease, opacity 0.2s ease;
+  opacity: 0.9;
+}
 .deep-dive summary {
   list-style: none;
   cursor: pointer;
   font-weight: 700;
-  padding: 1rem 1.1rem;
+  padding: 1rem 3.2rem 1rem 1.1rem;
+  position: relative;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+.deep-dive summary::after {
+  content: "+";
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  line-height: 1;
+  color: rgba(255,255,255,0.42);
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+.deep-dive:hover {
+  transform: translateY(-2px);
+  background: rgba(14, 18, 25, 0.8);
+  border-color: var(--line-strong);
+  box-shadow: 0 16px 32px rgba(0,0,0,0.2);
+}
+.deep-dive:hover summary {
+  transform: translateX(2px);
+}
+.deep-dive:hover summary::after {
+  color: rgba(255,255,255,0.92);
+  transform: translateY(-50%) translateX(2px);
+}
+.deep-dive[open] summary::after {
+  content: "−";
+  color: rgba(255,255,255,0.94);
 }
 .deep-dive summary::-webkit-details-marker { display: none; }
 .deep-dive-body { padding: 0 1.1rem 1.05rem; }
+body.project-shroomfall .deep-dive:hover,
+body.project-shroomfall .deep-dive[open] {
+  border-color: rgba(255,64,64,0.32);
+  background: rgba(28, 12, 14, 0.78);
+}
+body.project-shroomfall .deep-dive:hover summary,
+body.project-shroomfall .deep-dive[open] summary {
+  color: var(--red);
+}
+body.project-shroomfall .deep-dive::before {
+  background: linear-gradient(180deg, rgba(255,64,64,0.92), rgba(255,64,64,0.18));
+}
+body.project-shroomfall .deep-dive:hover summary::after,
+body.project-shroomfall .deep-dive[open] summary::after {
+  color: var(--red);
+}
+body.project-axis .deep-dive:hover,
+body.project-axis .deep-dive[open] {
+  border-color: rgba(90,162,255,0.34);
+  background: rgba(12, 18, 28, 0.8);
+}
+body.project-axis .deep-dive:hover summary,
+body.project-axis .deep-dive[open] summary {
+  color: var(--blue);
+}
+body.project-axis .deep-dive::before {
+  background: linear-gradient(180deg, rgba(90,162,255,0.95), rgba(90,162,255,0.18));
+}
+body.project-axis .deep-dive:hover summary::after,
+body.project-axis .deep-dive[open] summary::after {
+  color: var(--blue);
+}
+body.project-tools .deep-dive:hover,
+body.project-tools .deep-dive[open] {
+  border-color: rgba(244,197,66,0.36);
+  background: rgba(31, 24, 10, 0.8);
+}
+body.project-tools .deep-dive:hover summary,
+body.project-tools .deep-dive[open] summary {
+  color: var(--yellow);
+}
+body.project-tools .deep-dive::before {
+  background: linear-gradient(180deg, rgba(244,197,66,0.95), rgba(244,197,66,0.18));
+}
+body.project-tools .deep-dive:hover summary::after,
+body.project-tools .deep-dive[open] summary::after {
+  color: var(--yellow);
+}
+body.project-aiml .deep-dive:hover,
+body.project-aiml .deep-dive[open] {
+  border-color: rgba(82,255,142,0.34);
+  background: rgba(10, 28, 16, 0.8);
+}
+body.project-aiml .deep-dive:hover summary,
+body.project-aiml .deep-dive[open] summary {
+  color: var(--green);
+}
+body.project-aiml .deep-dive::before {
+  background: linear-gradient(180deg, rgba(82,255,142,0.92), rgba(82,255,142,0.18));
+}
+body.project-aiml .deep-dive:hover summary::after,
+body.project-aiml .deep-dive[open] summary::after {
+  color: var(--green);
+}
 body.project-shroomfall #projectViewTitle,
 body.project-shroomfall .project-view-label { color: var(--red); }
 body.project-axis #projectViewTitle,
@@ -516,6 +680,21 @@ body.project-aiml .project-view-label { color: var(--green); }
     transform: translateX(50%);
     bottom: -8px;
     max-height: 80vh;
+  }
+
+  .project-bg-figure {
+    height: min(78vh, 760px);
+    opacity: 0.11;
+  }
+
+  .project-bg-figure-left {
+    left: -130px;
+    transform: none;
+  }
+
+  .project-bg-figure-right {
+    right: -130px;
+    transform: none;
   }
 }
 
@@ -590,4 +769,41 @@ body.project-aiml .project-view-label { color: var(--green); }
 }
 .media-slot-video .media-slot-copy {
   margin-top: 0.85rem;
+}
+
+@media (max-width: 640px) {
+  .project-view-background-figures { display: none; }
+}
+
+
+.media-slot-image {
+  padding: 0.9rem;
+  align-content: start;
+}
+.media-image-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.16);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+  background: rgba(0,0,0,0.28);
+}
+.media-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 420px;
+  object-fit: contain;
+  background: #090b10;
+}
+
+
+.media-grid.media-grid-image-pair {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (max-width: 900px) {
+  .media-grid.media-grid-image-pair {
+    grid-template-columns: 1fr;
+  }
 }

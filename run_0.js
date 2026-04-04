@@ -166,49 +166,51 @@ const portfolioProjects = {
   aiml: {
     label: "Focused Project",
     title: "Steam Metadata ML",
-    subtitle: "A machine learning project predicting Steam review sentiment using pre-release metadata rather than gameplay footage or player-written review text.",
-    summary: "This project explored whether a game’s review outcome could be predicted from metadata alone, using information like price, genres, categories, achievements, and platform support. I cleaned the dataset, engineered 81 metadata features, and compared multiple classifiers to see how much signal exists before a game even launches.",
+    subtitle: "A machine learning project predicting Steam review sentiment from pre-release metadata alone, using store-facing features instead of gameplay footage, review text, or post-launch reception signals.",
+    summary: "This project asked whether a game’s Steam review outcome could be predicted before launch using only metadata the developer already controls or exposes ahead of release. I built a <span class='highlight-recruiter-green'>metadata-only classification pipeline</span> using price, genres, categories, platform support, achievements, and related store information, then compared Logistic Regression and Random Forest models to measure how much signal exists without relying on gameplay footage or user-written reviews.",
     role: "ML / Data Project",
     type: "Focused Portfolio Project",
     focus: [
       "Feature engineering",
-      "Dataset cleaning",
+      "Dataset cleaning and filtering",
       "Model comparison",
-      "Games-focused analysis"
+      "Games-focused data analysis",
+      "Interpretability and feature importance"
     ],
     tech: [
       "Python",
+      "Pandas / NumPy",
       "Scikit-learn",
-      "Classification models",
+      "Logistic Regression",
+      "Random Forest",
       "Data preprocessing",
       "Visualization and evaluation"
     ],
     work: [
-      "Cleaned and filtered a large Steam dataset to remove unstable or misleading samples.",
-      "Built metadata-only features so the model could not rely on review leakage.",
-      "Compared Logistic Regression and Random Forest classifiers on the same task.",
-      "Analyzed which metadata features were most predictive and what that implies for game positioning and reception."
+      "Cleaned and filtered a 70,000+ entry Steam dataset down to a more reliable 24,000-game training set by removing unreleased titles, zero-review games, and unstable low-sample cases.",
+      "Engineered <span class='highlight-recruiter-green'>81 metadata-based features</span> from store-facing fields such as genres, categories, platforms, achievements, developer/publisher counts, price, and release timing.",
+      "Removed all review-derived input columns to avoid leakage, then trained and compared Logistic Regression and Random Forest classifiers on the same binary sentiment task.",
+      "Used visualization and feature-importance analysis to identify which metadata signals were most predictive, including price, achievement count, genre tags, controller support, trading cards, cloud saves, and broader platform coverage."
     ],
     deepDives: [
       {
-        title: "Feature engineering and preprocessing",
-        body: "Explain how metadata fields were parsed, encoded, cleaned, and transformed into model-ready features."
+        title: "Technical breakdown: dataset filtering, label design, and leakage-safe preprocessing",
+        body: "The core challenge was turning a messy real-world Steam dataset into something usable without letting the model cheat. I started from a 70,000+ entry Kaggle dataset, removed unreleased games and titles with zero reviews, then filtered the set down further to games with at least 10 reviews because extremely small sample sizes caused unstable review percentages that would add noise to the label. The final dataset contained roughly <span class='highlight-recruiter-green'>24,000 games and 81 metadata-only features</span>. From there, I parsed list-encoded store fields such as genres, categories, and platforms, multi-hot encoded those tags, created structured numeric signals like developer and publisher counts, filled missing Metacritic values with the median, derived release-year information, and removed all review-related columns from the model inputs. Labels were then created from the positive review percentage using Steam’s 75 percent ‘Very Positive’ threshold, so the final task stayed grounded in a real platform-facing quality benchmark while still keeping the input pipeline pre-release only."
       },
       {
-        title: "Model results and interpretation",
-        body: "Break down the comparison between baseline and nonlinear models, and explain what ~67 percent accuracy means in context."
+        title: "Technical breakdown: baseline versus nonlinear model comparison",
+        body: "I used two different classifiers so the project could compare simple and nonlinear decision boundaries on the same feature set. <span class='highlight-recruiter-green'>Logistic Regression</span> acted as the linear baseline after feature scaling, which helped show how far straightforward metadata relationships could go on their own. I then trained a <span class='highlight-recruiter-green'>Random Forest classifier</span> to capture more complex interactions between price, platform support, genre combinations, and other store metadata. The models were evaluated on a stratified 80/20 train-test split, and both landed around <span class='highlight-recruiter-green'>67 percent accuracy</span> without using gameplay footage, written review text, or post-launch engagement signals. That result was the most interesting part of the project: metadata alone does not explain everything, but it carries a lot more predictive signal than I initially expected."
       },
       {
-        title: "Why this matters for games",
-        body: "Use this section to connect the project back to game development: player expectations, store positioning, platform support, and how metadata can reveal product signals."
+        title: "Technical breakdown: visualization, feature importance, and game-facing takeaways",
+        body: "The project was not just about producing an accuracy number; it was also about understanding what kinds of store-facing signals actually matter. The review-count scatter plot showed why low-sample games had to be filtered: titles with very few reviews could appear extremely positive or extremely negative simply because a tiny audience swings the percentage wildly, while higher-review games stabilize into a narrower band. On the model side, the Random Forest feature importances surfaced a set of useful patterns. <span class='highlight-recruiter-green'>Initial price and achievement count</span> were by far the strongest signals, followed by genre tags such as indie, action, casual, adventure, and RPG, plus ecosystem-facing features like Steam Cloud, trading cards, and controller support. Mac and Linux support also ranked meaningfully, which suggests broader platform support may correlate with more mature production and engineering pipelines. The overall takeaway is that store metadata cannot capture why a game fails moment to moment, but it does encode meaningful information about positioning, production scope, and perceived player value before launch."
       }
     ],
     media: [
-      { title: "Data distribution view", note: "Add one chart showing review positivity versus review count or another key relationship." },
-      { title: "Feature importance plot", note: "Show the most predictive metadata features from the model." },
-      { title: "Pipeline overview", note: "Use a simple diagram or screenshot to explain the preprocessing and training flow." }
+      { title: "Review positivity vs review count", type: "image", src: "523410866-1c0e1fcb-e38d-4eb2-a7fe-4776f00516d7.png", note: "Shows why low-review-count games were filtered out: tiny sample sizes create extreme percentages that stabilize as review counts grow." },
+      { title: "Top 30 feature importances", type: "image", src: "523411714-7441fd0c-1dc3-4eb4-ae64-03f65c4d5a34.png", note: "Random Forest feature importances highlighting which metadata fields carried the most predictive signal." }
     ],
-    impact: "This project broadens the portfolio beyond gameplay alone and shows applied ML thinking on a problem directly related to games, data, and technical analysis.",
+    impact: "This project shows applied ML work in a game-focused context: cleaning noisy real-world data, building a <span class='highlight-recruiter-green'>leakage-safe prediction pipeline</span>, comparing interpretable and nonlinear models, and using feature analysis to extract practical insights about how Steam store metadata relates to player reception.",
     bodyClass: "project-aiml",
     materialId: 2
   }
@@ -231,6 +233,7 @@ const projectTechList = document.getElementById("projectTechList");
 const projectWorkList = document.getElementById("projectWorkList");
 const projectImpact = document.getElementById("projectImpact");
 const projectMediaGrid = document.getElementById("projectMediaGrid");
+const projectMediaNote = document.querySelector(".media-note");
 const projectDeepDives = document.getElementById("projectDeepDives");
 
 function clamp(value, min, max) {
@@ -259,7 +262,17 @@ function pauseAllMedia(except = null) {
 function renderMedia(items) {
   projectMediaGrid.innerHTML = "";
   const hasVideo = items.some((item) => item.type === "video");
+  const hasImage = items.some((item) => item.type === "image");
+  const imageCount = items.filter((item) => item.type === "image").length;
+
   projectMediaGrid.classList.toggle("media-grid-video-large", hasVideo);
+  projectMediaGrid.classList.toggle("media-grid-image-pair", !hasVideo && hasImage && imageCount === 2);
+
+  if (projectMediaNote) {
+    if (hasVideo) projectMediaNote.textContent = "Hover videos to preview them.";
+    else if (hasImage) projectMediaNote.textContent = "Selected visualizations from the project.";
+    else projectMediaNote.textContent = "";
+  }
 
   for (const item of items) {
     const slot = document.createElement("div");
@@ -309,6 +322,20 @@ function renderMedia(items) {
       video.addEventListener("ended", () => {
         video.currentTime = 0;
       });
+    } else if (item.type === "image") {
+      slot.classList.add("media-slot-image");
+
+      const frame = document.createElement("div");
+      frame.className = "media-image-frame";
+
+      const image = document.createElement("img");
+      image.className = "media-image";
+      image.src = item.src;
+      image.alt = item.title;
+      image.loading = "lazy";
+
+      frame.appendChild(image);
+      slot.appendChild(frame);
     }
 
     const meta = document.createElement("div");
