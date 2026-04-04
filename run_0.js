@@ -115,51 +115,52 @@ const portfolioProjects = {
     materialId: 3
   },
   tools: {
-    label: "Focused Project",
-    title: "Gameplay / Design Tools",
-    subtitle: "Internal tooling focused on faster iteration, clearer debugging, and more usable workflows for design and gameplay development.",
-    summary: "This section is meant to collect tools work that supports development directly: tuning utilities, debug visualization, workflow helpers, and systems that make iteration faster and clearer. Even when the tool itself is small, the value is in how much easier it makes building and balancing features.",
-    role: "Tools / Technical Design",
-    type: "Focused Portfolio Project",
+    label: "Internship Project",
+    title: "AWS Cloud Automation",
+    subtitle: "Internship project focused on cloud-backed backend automation for storefront pricing, catalog imports, service-order workflows, and Shopify data management.",
+    summary: "Built a <span class='title-accent-yellow'>lightweight cloud commerce automation stack</span> around serverless-style backend jobs, Shopify Admin integrations, product and service data modeling, and automated workflows for pricing, imports, and service-order handling. The throughline was taking messy operational tasks and turning them into reliable scripted systems that could run securely, scale across multiple handlers, and update real storefront data without constant manual intervention.",
+    role: "Cloud Engineering / Backend Automation Intern",
+    type: "Internship Project",
     focus: [
-      "Iteration speed",
-      "Debug visibility",
-      "Tuning workflows",
-      "Designer-facing usability"
+      "Serverless-style backend workflows",
+      "API integration and automation",
+      "Shopify Admin REST + GraphQL",
+      "Data modeling and normalization",
+      "Operational tooling and schema setup",
+      "Commerce workflow automation"
     ],
     tech: [
-      "Unity editor tooling",
-      "Debug visualization",
-      "Systems tuning",
-      "Workflow design",
-      "Gameplay support tools"
+      "AWS Secrets Manager",
+      "Lambda-style handler architecture",
+      "Python + JavaScript automation",
+      "Shopify Admin REST API",
+      "Shopify Admin GraphQL API",
+      "Environment-driven configuration",
+      "Regex and heuristic data cleaning",
+      "CSV and JSON processing"
     ],
     work: [
-      "Built and iterated on internal helpers that support faster testing and clearer debugging.",
-      "Focused on tooling that makes systems easier to inspect, tune, and communicate during development.",
-      "Approached tools work with the same player-facing mindset as gameplay work: clarity, responsiveness, and usability.",
-      "Used tooling as a way to reduce friction between design intent and engineering implementation."
+      "Built <span class='title-accent-yellow'>cloud-backed backend automations</span> for storefront operations rather than one-off scripts, with reusable handlers, environment-driven configuration, and secure secret-managed credentials.",
+      "Developed a competitive pricing pipeline that pulled external market data, extracted likely price candidates, filtered noisy results, computed trimmed averages, and pushed updated values back into Shopify product variants.",
+      "Created import and normalization workflows for product and service catalog data, including SKU generation, category assignment, conditional inventory behavior, and metadata mapping into Shopify-ready payloads.",
+      "Implemented service-order and customer workflows that turned intake data into structured Shopify records using custom metafields, customer creation scripts, and schema-definition automation."
     ],
     deepDives: [
       {
-        title: "Why tooling matters",
-        body: "Use this section to explain what problem a tool solved, who used it, and how it improved workflow speed or visibility."
+        title: "Technical breakdown: serverless-style job architecture, secure configuration, and handler reuse",
+        body: "A big part of the value here was architectural, not just feature-by-feature scripting. The automation stack was structured around a <span class='title-accent-yellow'>Lambda-style execution model</span> where environment configuration determined which handler should run, which meant the same deployed backend could execute different operational tasks without being rewritten into isolated one-off tools. Shopify credentials and external API access were driven through environment variables and <span class='title-accent-yellow'>AWS Secrets Manager</span> rather than being embedded directly in code, which is the kind of separation you want when automation starts moving from local experiments into reusable cloud jobs. That structure made the work feel more like backend systems engineering than simple scripting: a configurable automation surface, secure credential flow, and a codebase organized so multiple commerce tasks could live in the same operational framework."
       },
       {
-        title: "Debugging and visualization",
-        body: "Show any in-editor or runtime views that made hidden systems easier to understand, such as state displays, graphs, overlays, or tuning panels."
+        title: "Technical breakdown: competitive pricing pipeline, noisy-data cleanup, and storefront updates",
+        body: "The pricing workflow was essentially a small ingestion and decision pipeline. It queried an external search source, extracted likely prices from returned text using regex, filtered out unreasonable values, and then used a <span class='title-accent-yellow'>trimmed-mean style aggregation</span> to reduce the influence of noisy outliers before committing an updated number. On the storefront side, the automation fetched Shopify product data, read variant pricing, and wrote adjusted prices back through the Admin API. What I like about this system is that it was not just a naive scrape-and-overwrite approach. It had secret-managed credentials, external API communication, heuristic extraction, outlier resistance, persistence updates, and final API-side synchronization, which made it a more credible data pipeline than a basic crawler script."
       },
       {
-        title: "Where this is going",
-        body: "As you add more tools work, this page can become a stronger hub for editor extensions, balancing utilities, import pipelines, and workflow support systems."
+        title: "Technical breakdown: catalog import workflows, service-order modeling, and Shopify schema automation",
+        body: "Another major piece of the work was turning semi-structured business data into a normalized operational model inside Shopify. Product and service import scripts converted source records into storefront-ready payloads by deriving titles and descriptions, generating SKUs when needed, assigning categories, and handling inventory behavior differently for service items versus stocked items. Beyond that, I worked on a <span class='title-accent-yellow'>service-order digitization workflow</span> that represented repair intake as structured Shopify records with custom metafields for things like invoice number, complaint description, service date, parts provided, vehicle state, and other intake details. Supporting scripts also created the metafield definitions and customer records through GraphQL, including validation, formatting, and rate-limited batch behavior. That combination of import logic, schema creation, and operational record modeling made this project much stronger than simple CRUD automation because it treated Shopify as both a storefront and a backend data system."
       }
     ],
-    media: [
-      { title: "Tool UI capture", note: "Add an editor screenshot, debug panel, or workflow UI." },
-      { title: "Before / after workflow", note: "Show how the tool made a task faster, clearer, or less error-prone." },
-      { title: "System visibility", note: "Use a clip or screenshot that demonstrates what the tool reveals or improves." }
-    ],
-    impact: "This card shows tools-programmer and technical-design thinking: improving development quality by making systems easier to tune, inspect, and ship.",
+    media: [],
+    impact: "This project broadens the portfolio beyond gameplay by showing <span class='title-accent-yellow'>backend automation, API integration, secure cloud job design, data modeling, and operational workflow engineering</span> in a real business context.",
     bodyClass: "project-tools",
     materialId: 1
   },
@@ -261,6 +262,19 @@ function pauseAllMedia(except = null) {
 
 function renderMedia(items) {
   projectMediaGrid.innerHTML = "";
+  const mediaCard = projectMediaGrid.closest(".media-card");
+  const hasMedia = Array.isArray(items) && items.length > 0;
+
+  if (mediaCard) {
+    mediaCard.hidden = !hasMedia;
+  }
+
+  if (!hasMedia) {
+    projectMediaGrid.classList.remove("media-grid-video-large", "media-grid-image-pair");
+    if (projectMediaNote) projectMediaNote.textContent = "";
+    return;
+  }
+
   const hasVideo = items.some((item) => item.type === "video");
   const hasImage = items.some((item) => item.type === "image");
   const imageCount = items.filter((item) => item.type === "image").length;
