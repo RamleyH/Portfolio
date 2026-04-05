@@ -106,9 +106,9 @@ const portfolioProjects = {
       }
     ],
     media: [
-      { title: "Franchise news system", note: "Add a screenshot or short clip of the generated franchise articles inside the in-game news feed." },
-      { title: "Tag / template breakdown", note: "Show the template structure, supported tags, or a debug view that reveals how live franchise data maps into article output." },
-      { title: "Tackle polish reel", note: "Use a gameplay gif or short before-and-after clip to show the animation tuning and situation-specific tackle work." }
+      { title: "Franchise news system" },
+      { title: "Tag / template breakdown" },
+      { title: "Tackle polish reel" }
     ],
     impact: "This project shows both sides of production gameplay work: building a <span class='highlight-recruiter-blue'>shipped runtime content system</span> that turns simulation data into player-facing franchise content, and detailed on-field animation tuning that improves gameplay presentation.",
     bodyClass: "project-axis",
