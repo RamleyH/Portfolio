@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Anton&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="styles/main.css" />
 </head>
 
 <body>
@@ -22,11 +22,11 @@
     <header class="site-header">
       <div class="site-mark">Ramley Hirneisen</div>
       <nav class="site-nav" aria-label="Primary">
-        <a class="site-nav-link site-nav-resume" href="resume.pdf" target="_blank" rel="noopener">Resume</a>
+        <a class="site-nav-link site-nav-resume" href="assets/common/docs/ramley-resume.pdf" target="_blank" rel="noopener">Resume</a>
         <a class="site-nav-link site-nav-linkedin" href="https://www.linkedin.com/in/ramley-hirneisen" target="_blank" rel="noopener">LinkedIn</a>
         <a class="site-nav-link site-nav-github" href="https://github.com/RamleyH" target="_blank" rel="noopener">GitHub</a>
         <a class="site-nav-link site-nav-gmail" href="https://mail.google.com/mail/?view=cm&fs=1&to=rahramley@gmail.com" target="_blank" rel="noopener">Gmail</a>
-        <a class="site-nav-link site-nav-discord" href="https://discord.com/app" target="_blank" rel="noopener">Discord</a>
+        <a class="site-nav-link site-nav-discord" href="https://discord.com/app" target="_blank" rel="noopener" data-discord-username="ramsram" title="Opens Discord and copies username: ramsram">Discord</a>
       </nav>
     </header>
 
@@ -65,7 +65,7 @@
           </div>
 
           <div class="hero-portrait-column" aria-hidden="true">
-            <img class="hero-portrait" src="portrait-ramley.png" alt="" />
+            <img class="hero-portrait" src="assets/common/images/ramley-portrait.png" alt="" />
           </div>
         </div>
       </section>
@@ -81,7 +81,7 @@
             <span class="project-accent"></span>
             <span class="project-kicker">Indie Game</span>
             <div class="project-logo-title-wrap">
-              <img class="project-logo-title project-logo-title-shroomfall" src="ShroomfallLogo (1).png" alt="Shroomfall" />
+              <img class="project-logo-title project-logo-title-shroomfall" src="assets/projects/shroomfall/images/shroomfall-logo.png" alt="Shroomfall" />
             </div>
             <p>
               <span class='highlight-recruiter-red'>Multiplayer active-ragdoll</span> platforming built around movement expression, networking, physics interaction,
@@ -93,7 +93,7 @@
             <span class="project-accent"></span>
             <span class="project-kicker">Professional Work</span>
             <div class="project-logo-title-wrap">
-              <img class="project-logo-title project-logo-title-axis" src="AxisLogoSS (2).png" alt="Axis Football 27" />
+              <img class="project-logo-title project-logo-title-axis" src="assets/projects/axis/images/axis-football-27-logo.png" alt="Axis Football 27" />
             </div>
             <p>
               Contributed to the release of <span class="highlight-recruiter-blue">Axis Football 27</span> through production gameplay and franchise systems work focused on dynamic news generation, article pipelines, and presentation polish.
@@ -121,9 +121,15 @@
       </section>
     </main>
 
+    <div class="project-view-video-layer" aria-hidden="true">
+      <video id="shroomfallBgVideo" class="project-bg-video" preload="metadata" playsinline muted>
+        <source src="assets/projects/shroomfall/video/shroomfall-background.mp4" type="video/mp4" />
+      </video>
+    </div>
+
     <div class="project-view-background-figures" aria-hidden="true">
-      <img class="project-bg-figure project-bg-figure-left" src="image (2) (1).png" alt="" />
-      <img class="project-bg-figure project-bg-figure-right" src="image (1) (1).png" alt="" />
+      <img class="project-bg-figure project-bg-figure-left" src="assets/projects/axis/images/axis-player-left.png" alt="" />
+      <img class="project-bg-figure project-bg-figure-right" src="assets/projects/axis/images/axis-player-right.png" alt="" />
     </div>
 
     <section class="project-view" id="projectView" aria-live="polite" aria-hidden="true">
@@ -250,9 +256,9 @@
     <button id="collapseButton" type="button">Collapse</button>
   </div>
 
-  <script src="metaballsRefraction.js"></script>
-  <script src="fpsMonitor.js"></script>
-  <script src="sim_5.js"></script>
-  <script src="run_0.js"></script>
+  <script src="scripts/rendering/metaballs-refraction.js"></script>
+  <script src="scripts/rendering/fps-monitor.js"></script>
+  <script src="scripts/simulation/simulator.js"></script>
+  <script src="scripts/app.js"></script>
 </body>
 </html>
