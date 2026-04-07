@@ -106,9 +106,18 @@ const portfolioProjects = {
       }
     ],
     media: [
-      { title: "Franchise news system" },
-      { title: "Tag / template breakdown" },
-      { title: "Tackle polish reel" }
+      {
+        title: "Tackle Animation Reel",
+        type: "video",
+        src: "assets/projects/axis/video/AxisFootballTackleAnimations.mp4",
+        note: "Fast-cut showcase of the tackle animation tuning and polish work across a wide range of situations."
+      },
+      {
+        title: "Article Tag Debug",
+        type: "video",
+        src: "assets/projects/axis/video/AxisTags.mp4",
+        note: "Debug view showing live franchise tag resolution and the data feeding the article generation pipeline."
+      }
     ],
     impact: "This project shows both sides of production gameplay work: building a <span class='highlight-recruiter-blue'>shipped runtime content system</span> that turns simulation data into player-facing franchise content, and detailed on-field animation tuning that improves gameplay presentation.",
     bodyClass: "project-axis",
@@ -310,7 +319,7 @@ function renderMedia(items) {
   const hasImage = items.some((item) => item.type === "image");
   const imageCount = items.filter((item) => item.type === "image").length;
 
-  projectMediaGrid.classList.toggle("media-grid-video-large", hasVideo);
+  projectMediaGrid.classList.toggle("media-grid-video-large", hasVideo && items.length >= 3);
   projectMediaGrid.classList.toggle("media-grid-image-pair", !hasVideo && hasImage && imageCount === 2);
 
   if (projectMediaNote) {
