@@ -1173,3 +1173,31 @@ body.project-aiml .project-view-label {
     grid-template-columns: 1fr;
   }
 }
+
+/* Bigger Axis media only */
+.media-grid.media-grid-axis-large {
+  grid-template-columns: 1fr;
+}
+
+.media-grid.media-grid-axis-large .media-video-frame {
+  min-height: 430px;
+  aspect-ratio: 16 / 9;
+}
+
+.media-grid.media-grid-axis-large .media-slot-video {
+  padding: 1rem;
+}
+
+.media-grid.media-grid-axis-large .media-slot-copy strong {
+  font-size: 1.18rem;
+}
+
+.media-grid.media-grid-axis-large .media-slot-copy span {
+  font-size: 1rem;
+}
+
+@media (max-width: 900px) {
+  .media-grid.media-grid-axis-large .media-video-frame {
+    min-height: 240px;
+  }
+}

@@ -1,3 +1,4 @@
+
 // Options
 let numParticles = 2200;
 
@@ -43,19 +44,35 @@ const portfolioProjects = {
         body: "I wanted customization to feel like an <span class='highlight-recruiter-red'>interactive in-world system</span> instead of a flat menu that just swaps colors and face icons. To do that, I split the feature into clean layers with different responsibilities. <span class='highlight-recruiter-red'>ShroomCustomizerMPB</span> is the rendering core for a single avatar or preview shroom: it applies masked body, cap, and spot colors through <span class='highlight-recruiter-red'>MaterialPropertyBlocks</span> so each player can have unique colors without duplicating runtime materials, switches eye variants through GameObject sets, swaps mouth textures through a property block on the mouth quad, and can drive temporary emission feedback while a change is still “in transit.” The important architecture decision is that preview state and committed state are separate. The additive overlay edits a dedicated preview avatar, not the live networked player, so the player can experiment freely without polluting session state or other clients. Color changes also are not hard-set immediately every frame. The wheel controller samples a color from a 3D raycast-driven wheel, routes it into body, cap, or spots, then the preview customizer pushes that value into a <span class='highlight-recruiter-red'>pending -> queued sample -> delayed target -> visible color motion</span> pipeline. Small color jitter is filtered out, queued samples are released after a configurable travel delay, the visible colors lerp toward those delayed targets, and emission renderers light with the pending color while the change is still moving. That gave the whole system a much more physical and visually authored feel than a normal RGB picker. Face customization uses a different interaction model entirely: draggable eye and mouth stickers preview only while hovering a valid drop zone, revert safely on invalid release, and commit only on a valid drop, which made trying options feel playful without accidental changes. On apply, the preview avatar exports a compact <span class='highlight-recruiter-red'>ShroomData</span> payload, writes it to local persistence, immediately updates the live local avatar for responsiveness, and sends the same packed RGBA and face-index state into Fusion network properties so every client reconstructs the same committed look through its own local customizer. That separation between rendering, preview UX, saved preference, and authoritative replication made the feature feel much more polished than a standard menu while still staying efficient and maintainable in multiplayer."
       },
       {
-        title: "Technical breakdown: targeted grabbing, readable highlighting, and physical assist without losing collision truth",
-        body: "The newer grab system is built around the idea of making hand interaction <span class='highlight-recruiter-red'>smarter and more readable</span> without turning it into a fully scripted snap system. Any object that should participate exposes a <span class='highlight-recruiter-red'>GrabbableObject</span> component, which defines the valid grab colliders, returns the nearest reachable surface point, and can optionally drive the white outline highlight. Each hand then runs its own scanner from the hand grab point, does a nearby overlap query, filters self-collisions, finds candidate grabbables in parent hierarchy, and asks each one for its closest usable point relative to the hand. The scanner intentionally separates a larger awareness radius from a tighter highlight distance, so the hand can know about nearby candidates without making everything in the area look instantly grabbable. From that set, only the <span class='highlight-recruiter-red'>single best reachable candidate</span> gets highlighted, which makes the system much easier to read in motion. Once a candidate is selected, <span class='highlight-recruiter-red'>HandReachTarget</span> stores the object, collider, world point, and distance as the current reach target whenever the player is alive, in active ragdoll, state-authoritative, and actually holding grab input. In FixedUpdate, the hand rigidbody gets a physical assist force toward that chosen point with damping, stop distance handling, speed shaping, and reduced upward pull so the assist guides the arm without unrealistically hoisting the whole character. The important part is that this does <span class='highlight-recruiter-red'>not replace real grab confirmation</span>. The final latch still happens through physical collision in HandGrabHandler, where contact creates the FixedJoint, sets anchors from the impact point, applies feedback, and optionally scales mass for carry feel. So the full interaction loop is now: scan nearby grabbables, choose the best candidate, highlight it, assist the hand toward it, then still rely on actual collision as the final confirmation. That keeps the system more intentional and legible while preserving the physical feel that makes the game work."
-      },
-      {
         title: "Technical breakdown: host-authoritative ragdoll architecture, proxy playback, and world-state integration",
         body: "The broader multiplayer architecture is built around a <span class='highlight-recruiter-red'>host-authoritative active ragdoll</span> rather than a normal controller that just synchronizes a transform and a few booleans. <span class='highlight-recruiter-red'>NetworkPlayer</span> separates input authority from state authority so the local player submits intent, but the host owns the real gameplay truth: health, death, active-versus-limp state, portal transition state, grounded state, body yaw, grab state, and the final local rotations of the tracked ragdoll bones. The most important networking decision is that I am not trying to keep a full physical ragdoll simulation alive on every proxy. On non-authoritative instances, rigidbodies are zeroed and made kinematic, gravity and collisions are disabled, colliders are turned off, and joints are stripped so remote players become intentionally <span class='highlight-recruiter-red'>de-physicalized visual replicas</span> instead of unstable second simulations fighting the host. The host publishes the resulting local rotations of tracked bones into a network array each tick, and proxies reconstruct that result through buffered playback: they store replicated snapshots in a per-tick ring buffer, backfill missed ticks when needed, render from a small delay, slerp between adjacent snapshots, and snap when angles diverge too far. That gives remote characters continuity and readable secondary motion without the solver divergence, collision conflicts, and correction noise that would come from fully distributed ragdoll physics. The same authority pattern extends outward into the rest of the game. Hazards and interactables do not reach deep into player internals from random places; systems such as fire, explosions, and portals feed through narrow authoritative entry points for damage, knockdown, impulses, and transition state. Durable gameplay truth lives in replicated properties and timers, while one-shot audiovisual moments are fanned out with RPCs. Portal activation, countdowns, forced arrivals, teleports, and scene swaps all follow that same state-plus-RPC split, and authority-side teleports are paired with local correction on the input owner so the transition still feels immediate. The result is a multiplayer architecture that preserves the identity of a messy, physical active ragdoll character while staying far more stable, readable, and shippable than trying to simulate the full body independently on every machine."
       }
     ],
     media: [
-      { title: "Gameplay Systems", type: "video", src: "shroomfall-gameplay.mp4", note: "Active ragdoll movement, grabbing, slingshot, fall splat, portals, fire spread, and other core gameplay systems." },
-      { title: "Multiplayer", type: "video", src: "shroomfall-multiplayer.mp4", note: "Networking and multiplayer behavior with several players in a shared test scene." },
-      { title: "Customization", type: "video", src: "assets/projects/shroomfall/video/shroomfall-customization.mp4", note: "Character customization flow and presentation." },
-      { title: "Targeted Grabbing", type: "video", src: "ShroomfallGrabbing.mp4", note: "New targeted grabbing workflow showing nearby scanning, best-candidate highlighting, hand assist toward surfaces, and collision-confirmed latching." }
+      {
+        title: "Gameplay Systems",
+        type: "video",
+        src: "shroomfall-gameplay.mp4",
+        note: "Active ragdoll movement, slingshot traversal, fall splats, portals, fire spread, and other core gameplay systems."
+      },
+      {
+        title: "Multiplayer",
+        type: "video",
+        src: "shroomfall-multiplayer.mp4",
+        note: "Networking and multiplayer behavior with several players in a shared test scene."
+      },
+      {
+        title: "Customization",
+        type: "video",
+        src: "assets/projects/shroomfall/video/shroomfall-customization.mp4",
+        note: "Character customization flow and presentation."
+      },
+      {
+        title: "Targeted Grabbing System",
+        type: "video",
+        src: "assets/projects/shroomfall/video/ShroomfallGrabbing.mp4",
+        note: "Targeted hand grabbing, reach assist, object interaction, and local highlight feedback for physics-based player control."
+      }
     ],
     impact: "Shroomfall shows my strongest gameplay engineering work as a solo developer: multiplayer architecture, custom movement, ragdoll networking, animation-physics blending, and <span class='highlight-recruiter-red'>systemic interaction design</span> all built to support the same physics-first game instead of feeling like isolated features.",
     bodyClass: "project-shroomfall",
@@ -65,44 +82,59 @@ const portfolioProjects = {
     label: "Professional Work",
     title: "Axis Football 27",
     titleLogo: "assets/projects/axis/images/axis-football-27-logo.png",
-    subtitle: "Contributed to the release of Axis Football 27 through production gameplay, franchise systems work, large-scale tackle tuning, and player-facing presentation polish.",
-    summary: "At Axis Games, I contributed to the release of Axis Football 27 across both on-field gameplay presentation and franchise-mode systems. The biggest systems feature I owned was a <span class='highlight-recruiter-blue'>scalable franchise news pipeline</span> that turns live simulation data into context-aware in-game articles, while my gameplay work focused on tuning 50+ new tackle animations through X offset, Z offset, rotation, and frame-start adjustments so different tackle situations read better and feel more polished in motion.",
+    subtitle: "Contributed to Axis Football 27 through production franchise systems work, including a data-driven article/news generation pipeline that turns live franchise simulation data into weekly in-game sports coverage.",
+    summary: "At Axis Games, my largest systems contribution was a <span class='highlight-recruiter-blue'>data-driven franchise article/news generation system</span> for Axis Football's franchise mode. The system generates weekly news articles from live simulation data instead of relying on static blurbs or purely random story selection. It combines 100+ registered article categories, phase-specific weekly article pools, 3 headline and 3 body variants per category, contextual scoring, render validation, runtime tag injection, and per-franchise caching, allowing a single 4-article weekly issue to branch into millions of possible headline/body combinations before live franchise data is injected. I also contributed on-field presentation work by tuning 50+ new tackle animations through X offset, Z offset, rotation, and frame-start adjustments.",
     role: "Gameplay / Systems Intern",
     type: "Professional Experience",
     focus: [
-      "Gameplay systems",
-      "Data-driven content generation",
-      "Runtime pipeline architecture",
+      "Data-driven franchise systems",
+      "Runtime article generation",
       "Template rendering and validation",
       "Gameplay data integration",
-      "Debug tooling and iteration workflows",
-      "Animation tuning and presentation polish",
-      "Production collaboration"
+      "Contextual scoring and selection logic",
+      "Per-franchise caching and performance flow",
+      "Debug tooling and content validation",
+      "Animation tuning and presentation polish"
     ],
     tech: [
       "Unity / C# gameplay workflow",
-      "Data-driven systems design",
-      "Template-based content pipelines",
-      "Runtime validation and formatting",
-      "Debug tooling",
-      "Gameplay data integration",
-      "Franchise simulation support",
-      "Animation tuning"
+      "JSON content templates",
+      "Runtime tag injection",
+      "Scoring and priority systems",
+      "Render validation",
+      "Caching and performance optimization",
+      "Debug reports and hotkey tooling",
+      "Franchise simulation data"
     ],
     work: [
-      "Owned franchise-mode systems work for a dynamic in-game news feature that turns simulation state into player-facing articles.",
-      "Built the supporting <span class='highlight-recruiter-blue'>content pipeline and debug workflow</span> needed to make a template-driven article system usable in production.",
-      "Expanded the authored article and tag coverage so the system could support a wider range of weekly franchise storylines.",
+      "Built a <span class='highlight-recruiter-blue'>data-driven franchise news pipeline</span> that generates weekly sports articles from live franchise simulation data using JSON templates and runtime tags.",
+      "Implemented phase-based article pools for Week 1, early season, midseason, late season, playoffs, championship reaction, pre-draft, post-draft, and rookie coverage.",
+      "Created contextual scoring and selection rules so the News tab prioritizes relevant storylines like standings pressure, injuries, key battles, trades, free agency, awards, leaders, playoff matchups, and draft outcomes.",
+      "Added render validation and article-safe gates so templates with missing tags or unsafe stat context are skipped instead of displaying broken or awkward text.",
+      "Moved article generation out of the News tab click path and into franchise-flow moments, then cached weekly issues per franchise/week so returning to a save reuses the same generated issue.",
+      "Built debug and validation tools for score reports, tag dumps, publication tracking, missing-template detection, no-fill failures, and multi-season occurrence testing.",
       "Contributed on-field polish work by tuning 50+ tackle animations for cleaner alignment, timing, and situation-specific readability."
     ],
     deepDives: [
       {
-        title: "Technical breakdown: article pipeline architecture and runtime composition",
-        body: "The article system is structured as a <span class='highlight-recruiter-blue'>data-driven runtime pipeline</span> instead of a bundle of hardcoded news cases. Article content is split into reusable categories with separate headline and body template pools, then resolved at runtime into final UI-ready stories. The generation flow loads the valid article set for the current franchise week, filters against simulation context, checks whether required fields can be resolved, selects a compatible headline/body pairing, performs placeholder substitution, and emits formatted output for the news feed. That separation between authored content, validation, and rendering made the feature scale to 50+ article types and thousands of possible combinations without needing one-off scripts per story."
+        title: "Technical breakdown: data-driven franchise article pipeline",
+        body: "The franchise news system is structured as a <span class='highlight-recruiter-blue'>data-driven runtime pipeline</span> instead of a set of hardcoded article cases. Each category lives as a JSON template set with multiple headline and body options, while C# systems decide when that category is relevant, whether its data exists, and how it should render for the current franchise week. The generation flow starts from franchise state, resolves the current phase, gathers eligible article categories, scores candidates, builds tags only for attempted stories, validates fillable headline/body options, injects live data, assigns outlet/byline metadata, and stores the generated issue. That separation lets authored text stay in templates while the code handles football context, safety, timing, and production reliability. The result is a scalable system that can cover previews, recaps, key battles, opponent watch, injuries, standings, power rankings, league leaders, awards, free agency, trades, playoffs, championship reaction, draft coverage, and Week 1 rookie stories without needing a one-off script for every article."
       },
       {
-        title: "Technical breakdown: franchise context model, tag resolution, and validation tooling",
-        body: "A major technical problem was making authored templates bind to live franchise data reliably enough for production use. I built a franchise-week context model plus a <span class='highlight-recruiter-blue'>100+ tag resolution layer</span> that exposes gameplay-driven values to the renderer, including standings, streaks, rankings, injuries, trades, schedule context, leaders, and matchup story hooks. Validation runs before template selection, so the pipeline only chooses stories whose required fields can actually be resolved for the current week. I also added caching, hotkey-based regeneration, and tag inspection tooling so I could audit mappings, surface missing data, and expand content coverage without destabilizing runtime output."
+        title: "Technical breakdown: phase pools, scoring, and storyline selection",
+        body: "The News tab needed to feel curated instead of random, so I built the selection layer around <span class='highlight-recruiter-blue'>season-phase filtering and contextual scoring</span>. A phase resolver separates the franchise calendar into Week 1, early season, midseason, late season, wildcard, divisional, conference championship, championship, post-championship/pre-draft, and post-draft phases. The scorer only evaluates categories that make sense for the current phase, then prioritizes stories based on the current save: team record, division or conference rank, playoff urgency, standings pressure, weekly free-agent moves, trades, injuries with meaningful production, key matchup stats, power rankings, awards races, league leaders, playoff bracket state, championship results, and draft outcomes. It also balances user-team stories against league-wide stories, applies publication fatigue so repeated categories become less likely, uses family diversity so one issue does not become all power rankings or all key battles, and uses random tiebreakers when articles have no strong reason to be ordered deterministically."
+      },
+      {
+        title: "Technical breakdown: tag builders, render validation, and article safety",
+        body: "A major production challenge was making sure authored templates could safely bind to live franchise data. I built a <span class='highlight-recruiter-blue'>runtime tag-building layer</span> that turns franchise state into template-ready fields for team names, opponents, records, streaks, standings, rankings, leaders, last-game standouts, injuries, trades, free agency, draft context, playoff state, and article-ready phrase text. The renderer then checks every headline and body option before displaying it. If a template requires a missing or empty tag, that option is skipped; if no body can be filled, the category is recorded as a no-fill failure instead of surfacing broken text. On top of that final validation pass, the scorer applies article-safe gates for situations that would sound unnatural, like injury stories for players without meaningful production, receiver articles with low receiving output, pass-rush stories with zero sacks or tackles for loss, or key battle templates that print zero-value stats unless zero is actually positive, such as quarterback interceptions in a ball-security context."
+      },
+      {
+        title: "Technical breakdown: caching, performance, and franchise-flow integration",
+        body: "Originally, article generation was tied too closely to opening the News tab, which could concentrate too much work on a player-facing UI action. I moved generation into <span class='highlight-recruiter-blue'>franchise-flow moments</span> such as week start, franchise dashboard entry, week advance, and post-draft updates, then cached the generated article issue by franchise/week key. That means opening the News tab can use an existing generated issue, leaving and returning to the same franchise does not reroll the articles, switching franchise saves keeps separate issues, and week or draft transitions produce new coverage at the correct time. I also reduced unnecessary work by filtering article pools by phase, caching loaded JSON templates, only gathering tag context when relevant categories are attempted, and keeping heavy debug/report tooling out of normal builds. There may still be a small week-start cost, but the expensive work is no longer concentrated on the tab-opening path."
+      },
+      {
+        title: "Technical breakdown: debugging, coverage tracking, and content iteration",
+        body: "Because the system has many categories and situational tags, I built several layers of <span class='highlight-recruiter-blue'>debugging and validation tooling</span> to make it testable. Score debug reports show the current phase, eligible count, scored count, positive count, selected order, category score, family, and candidate status. Tag dumps expose team context, leaders, trades, free agency, draft, playoffs, or a full category-specific tag set. Publication tracking records attempts, successful publications, missing JSONs, no-fill template failures, empty renders, per-category counts, unseen categories, and last published titles. A development hotkey runner can regenerate articles, refresh the News tab, dump tags, dump score reports, and reset tracking, while being guarded out of normal builds. Those tools made it possible to run through franchise seasons, see which articles appeared too often or never appeared, find unsafe templates, tune key battle and pre-draft occurrence rates, and keep expanding content without guessing."
       },
       {
         title: "Technical breakdown: tackle alignment tuning and presentation iteration",
@@ -123,7 +155,7 @@ const portfolioProjects = {
         note: "Debug view showing live franchise tag resolution and the data feeding the article generation pipeline."
       }
     ],
-    impact: "This project shows both sides of production gameplay work: building a <span class='highlight-recruiter-blue'>shipped runtime content system</span> that turns simulation data into player-facing franchise content, and detailed on-field animation tuning that improves gameplay presentation.",
+    impact: "This project is my strongest shipped/professional systems example: a <span class='highlight-recruiter-blue'>production franchise content pipeline</span> that connects simulation data, authored templates, scoring logic, validation, caching, and debug tooling into player-facing sports coverage, while also showing I can contribute to lower-level gameplay presentation through detailed tackle animation tuning.",
     bodyClass: "project-axis",
     materialId: 3
   },
@@ -323,7 +355,8 @@ function renderMedia(items) {
   const hasImage = items.some((item) => item.type === "image");
   const imageCount = items.filter((item) => item.type === "image").length;
 
-  projectMediaGrid.classList.remove("media-grid-video-large");
+  projectMediaGrid.classList.toggle("media-grid-video-large", hasVideo && items.length === 3 && activeProjectId !== "axis");
+  projectMediaGrid.classList.toggle("media-grid-axis-large", hasVideo && activeProjectId === "axis");
   projectMediaGrid.classList.toggle("media-grid-image-pair", !hasVideo && hasImage && imageCount === 2);
 
   if (projectMediaNote) {
